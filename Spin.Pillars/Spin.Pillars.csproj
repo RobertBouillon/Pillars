@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Web Debug</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Web Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Web Debug|x64'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Meters\Specialized\**" />
+    <EmbeddedResource Remove="Meters\Specialized\**" />
+    <None Remove="Meters\Specialized\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="FileSystem\DirectoryPath.cs" />
+    <Compile Remove="FileSystem\FilePath.cs" />
+    <Compile Remove="FileSystem\FileSystemPath.cs" />
+    <Compile Remove="FileSystem\OS\MountProvider.cs" />
+    <Compile Remove="LogBuffer.cs" />
+    <Compile Remove="Logging\LogController.cs" />
+    <Compile Remove="Logging\Logs.cs" />
+    <Compile Remove="Logging\LongCounter.cs" />
+    <Compile Remove="Logging\Watchers\CompressedLogFileWatcher.cs" />
+    <Compile Remove="Logging\Watchers\LogWatchers.cs" />
+    <Compile Remove="Logging\Watchers\LogWatcherState.cs" />
+    <Compile Remove="Logging\Watchers\XmlDiskLogWatcher.cs" />
+    <Compile Remove="Meters\Aggregate\SimpleTrackerT.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Spin.Pillars.v1\Spin.Pillars.v1.csproj" />
+    <ProjectReference Include="..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Configuration\ConfigurationAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Configuration\ConfigurationAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Configuration\ConfigurationNode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>
