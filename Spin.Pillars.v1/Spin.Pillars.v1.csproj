@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
+    <ProjectReference Include="..\..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
   </ItemGroup>
 
 </Project>

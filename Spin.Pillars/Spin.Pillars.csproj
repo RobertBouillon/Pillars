@@ -45,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Pillars\Spin.Pillars.v1\Spin.Pillars.v1.csproj" />
+    <ProjectReference Include="..\Spin.Pillars.v1\Spin.Pillars.v1.csproj" />
     <ProjectReference Include="..\..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
   </ItemGroup>
 
