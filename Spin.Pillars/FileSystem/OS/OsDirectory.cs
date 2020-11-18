@@ -15,7 +15,7 @@ namespace Spin.Pillars.FileSystem.OS
 
     public OsProvider OsProvider => Provider as OsProvider;
 
-    public override Directory Parent => Path.Count == 0 ? null : new OsDirectory(OsProvider, Path.MoveUp());
+    public override OsDirectory Parent => Path.Count == 0 ? null : new OsDirectory(OsProvider, Path.MoveUp());
 
     public OsDirectory(io.DirectoryInfo directory) : this(directory.FullName) { }
     public OsDirectory(string path)
