@@ -40,7 +40,7 @@ namespace Spin.Pillars.Logging
       var ret = new LogEntry
       {
         EntryTime = Clock.Time,
-        Module = Module,
+        Category = Module.Path,
         FormatText = format,
         Arguments = args,
         Severity = severity
@@ -59,7 +59,7 @@ namespace Spin.Pillars.Logging
         Arguments = args,
         Severity = severity,
         Error = new ExceptionInfo(ex),
-        Module = Module
+        Category = Module.Path
       };
 
       Write(ret);

@@ -24,7 +24,7 @@ namespace Spin.Pillars.Logging.Writers
 
       Writer = writer;
       Delimiter = delimiter;
-      Formatter = formatter ?? (x => String.Format(@"{0:hh\:mm\:ss\:ffffff}{3}{1}{3}{2}", x.EntryTime, x.Module.Path.ToString('\\'), x.ToString(), Delimiter));
+      Formatter = formatter ?? (x => String.Format(@"{0:hh\:mm\:ss\:ffffff}{3}{1}{3}{2}", x.EntryTime, x.Category.ToString('\\'), x.ToString(), Delimiter));
     }
 
     public override void Write(IEnumerable<LogEntry> buffer)
