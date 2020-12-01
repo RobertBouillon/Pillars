@@ -23,15 +23,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Modules\Configuration\**" />
-    <Compile Remove="Modules\Logging\Alerts\**" />
-    <Compile Remove="Modules\Meters\**" />
-    <EmbeddedResource Remove="Modules\Configuration\**" />
-    <EmbeddedResource Remove="Modules\Logging\Alerts\**" />
-    <EmbeddedResource Remove="Modules\Meters\**" />
-    <None Remove="Modules\Configuration\**" />
-    <None Remove="Modules\Logging\Alerts\**" />
-    <None Remove="Modules\Meters\**" />
+    <Compile Remove="Logging\Alerts\**" />
+    <EmbeddedResource Remove="Logging\Alerts\**" />
+    <None Remove="Logging\Alerts\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,13 +34,13 @@
     <Compile Remove="FileSystem\FileSystemPath.cs" />
     <Compile Remove="FileSystem\OS\MountProvider.cs" />
     <Compile Remove="LogBuffer.cs" />
-    <Compile Remove="Modules\Logging\LogController.cs" />
-    <Compile Remove="Modules\Logging\Logs.cs" />
-    <Compile Remove="Modules\Logging\LongCounter.cs" />
-    <Compile Remove="Modules\Logging\Writers\CompressedLogFileWatcher.cs" />
-    <Compile Remove="Modules\Logging\Writers\LogWatchers.cs" />
-    <Compile Remove="Modules\Logging\Writers\LogWatcherState.cs" />
-    <Compile Remove="Modules\Logging\Writers\XmlDiskLogWatcher.cs" />
+    <Compile Remove="Logging\LogController.cs" />
+    <Compile Remove="Logging\Logs.cs" />
+    <Compile Remove="Logging\LongCounter.cs" />
+    <Compile Remove="Logging\Writers\CompressedLogFileWatcher.cs" />
+    <Compile Remove="Logging\Writers\LogWatchers.cs" />
+    <Compile Remove="Logging\Writers\LogWatcherState.cs" />
+    <Compile Remove="Logging\Writers\XmlDiskLogWatcher.cs" />
   </ItemGroup>
 
   <ItemGroup>

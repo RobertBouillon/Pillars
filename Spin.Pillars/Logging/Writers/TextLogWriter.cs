@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Spin.Pillars.Modules.Logging.Writers
+namespace Spin.Pillars.Logging.Writers
 {
   public class TextLogWriter : LogWriter, IDisposable
   {

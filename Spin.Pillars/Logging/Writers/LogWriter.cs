@@ -1,12 +1,10 @@
-﻿using Spin.Pillars.Logging;
-using Spin.Pillars.Time;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Spin.Pillars.Modules.Logging.Writers
+namespace Spin.Pillars.Logging.Writers
 {
   public abstract class LogWriter
   {

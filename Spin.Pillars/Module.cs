@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Spin.Pillars.Logging;
 using System.Linq;
 using Spin.Pillars.Hierarchy;
-using Spin.Pillars.Modules.Logging.Writers;
+using Spin.Pillars.Logging.Writers;
 using Spin.Pillars.Time;
 
 namespace Spin.Pillars
@@ -50,6 +50,13 @@ namespace Spin.Pillars
     }
 
     #endregion
+
+    public Module AddChild(string name, LogWriter logWriter = null, IClock clock = null)
+    {
+      var added = new Module(name, this, logWriter, clock);
+      Children.Add(added);
+      return added;
+    }
 
     #region Overrides
     public override string ToString() => Name;

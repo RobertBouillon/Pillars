@@ -1,15 +1,11 @@
-﻿using Spin.Pillars.Logging;
-using Spin.Pillars.Time;
-using Spin.Pillars.Workers;
+﻿using Spin.Pillars.Workers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static System.FluentTry;
 
-namespace Spin.Pillars.Modules.Logging.Writers
+namespace Spin.Pillars.Logging.Writers
 {
   public class BackgroundWriter : LogWriter, IDisposable
   {

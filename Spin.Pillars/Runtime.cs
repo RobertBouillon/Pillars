@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Spin.Pillars.Logging;
-using Spin.Pillars.Modules.Logging.Writers;
+using Spin.Pillars.Logging.Writers;
 using Spin.Pillars.Time;
 
 namespace Spin.Pillars

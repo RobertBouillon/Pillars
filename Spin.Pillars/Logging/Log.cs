@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Spin.Pillars.Modules.Logging.Writers;
+﻿using Spin.Pillars.Logging.Writers;
 using Spin.Pillars.Time;
 using System;
 using System.Linq;
@@ -21,8 +20,8 @@ namespace Spin.Pillars.Logging
         throw new ArgumentNullException(nameof(writer));
       if (clock is null)
         throw new ArgumentNullException(nameof(clock));
-      if (Module is null)
-        throw new ArgumentNullException(nameof(Module));
+      if (module is null)
+        throw new ArgumentNullException(nameof(module));
       #endregion
       Writer = writer;
       Clock = clock;

@@ -7,7 +7,7 @@ using System.Xml;
 using System.IO.Compression;
 using Spin.Pillars.Logging;
 
-namespace Spin.Pillars.Modules.Logging.Writers
+namespace Spin.Pillars.Logging.Writers
 {
   public class FlatLogFileWriter : TextLogWriter
   {

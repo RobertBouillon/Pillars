@@ -1,11 +1,8 @@
-﻿using Spin.Pillars.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Spin.Pillars.Modules.Logging.Writers
+namespace Spin.Pillars.Logging.Writers
 {
   public class FilteredWriter : LogWriter
   {
