@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace System.Modules.v1_0
+namespace Spin.Pillars.v1
 {
   public enum AggregateType
   {

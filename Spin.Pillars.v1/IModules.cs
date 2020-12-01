@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Modules.v1_0
+namespace Spin.Pillars.v1
 {
   public interface IModules : IList<IModule>, ITreeNodes<IModule>, ITreeNodes, IEnumerable<IModule>
   {

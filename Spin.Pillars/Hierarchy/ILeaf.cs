@@ -6,7 +6,7 @@ namespace Spin.Pillars.Hierarchy
 {
   public interface ILeaf
   {
-    Path Path { get; }
+    Path Path => new Path(this);
     IBranch Parent { get; }
     string Name { get; }
   }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System.Modules.v1_0
+namespace Spin.Pillars.v1
 {
   public interface ITimeMeter : IAggregate<TimeSpan, TimeSpan>
   {

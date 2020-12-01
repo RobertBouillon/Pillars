@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace System.Modules.v1_0
+namespace Spin.Pillars.v1
 {
   public interface ILogController
   {

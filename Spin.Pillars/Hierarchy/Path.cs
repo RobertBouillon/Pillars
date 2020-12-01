@@ -13,9 +13,11 @@ namespace Spin.Pillars.Hierarchy
     public string Leaf => Nodes.Last();
     public int Count => Nodes.Length;
 
+    public Path(params string[] nodes) => Nodes = nodes;
     public Path(IEnumerable<string> nodes) => Nodes = nodes.ToArray();
     public Path(string path, char separator) => Nodes = path.Split(separator);
     public Path(string path, string separator) => Nodes = path.Split(new[] { separator }, StringSplitOptions.None);
+    public Path(ILeaf node) => Nodes = node.Traverse(x => x.Parent).Select(x => x.Name).Concat(node.Name).ToArray();
 
     public Path MoveUp(int levels = 1)
     {
