@@ -37,6 +37,11 @@ namespace Spin.Pillars.Logging
 
     public LogEntry Write(LogSeverity severity, string format, params object[] args)
     {
+      #region Validation
+      if (String.IsNullOrWhiteSpace(format))
+        throw new ArgumentNullException(nameof(format));
+      #endregion
+
       var ret = new LogEntry
       {
         EntryTime = Clock.Time,
@@ -52,6 +57,13 @@ namespace Spin.Pillars.Logging
 
     public LogEntry Write(LogSeverity severity, Exception ex, string text, params object[] args)
     {
+      #region Validation
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+      if (String.IsNullOrWhiteSpace(text))
+        throw new ArgumentNullException(nameof(text));
+      #endregion
+
       var ret = new LogEntry
       {
         EntryTime = Clock.Time,
