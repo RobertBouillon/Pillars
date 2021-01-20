@@ -57,6 +57,13 @@ namespace Spin.Pillars.FileSystem
       (encoding is null ? new io.StreamWriter(OpenWrite()) : new io.StreamWriter(OpenWrite(), encoding)).DisposeAfter(x => x.Write(text));
     }
 
+    public virtual void Write(IEnumerable<string> lines, bool overwrite = true, Encoding encoding = null, string lineDelimiter = null)
+    {
+      if (overwrite && Exists())
+        Delete();
+      (encoding is null ? new io.StreamWriter(OpenWrite()) : new io.StreamWriter(OpenWrite(), encoding)).DisposeAfter(x => x.Write(String.Join(lineDelimiter ?? Environment.NewLine, lines)));
+    }
+
     public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }
     public virtual Task<bool> ExistsAsync() => Task.FromResult(Exists());
     public virtual Task<io.Stream> OpenReadAsync() => Task.FromResult(OpenRead());
