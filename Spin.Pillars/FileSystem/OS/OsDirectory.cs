@@ -21,7 +21,7 @@ namespace Spin.Pillars.FileSystem.OS
     public OsDirectory(string path)
     {
       var root = System.IO.Path.GetPathRoot(path);
-      if (!OsProvider.Mounts.TryGetValue(root, out var provider))
+      if (!OsProvider.Mounts.TryGetValue(root.ToUpper(), out var provider))
         throw new ArgumentException($"Unable to find an instance of the drive '{root}'");
 
       Provider = provider;
