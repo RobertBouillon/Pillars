@@ -11,7 +11,7 @@ namespace Spin.Pillars.FileSystem.OS
   public class OsDirectory : Directory
   {
     public static OsDirectory CurrentWorking => new OsDirectory(io.Directory.GetCurrentDirectory());
-    public static OsDirectory CurrentExecuting => new OsDirectory(Assembly.GetExecutingAssembly().Location);
+    public static OsDirectory CurrentExecuting => new OsDirectory(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
     public OsProvider OsProvider => Provider as OsProvider;
 
@@ -43,5 +43,23 @@ namespace Spin.Pillars.FileSystem.OS
 
     public override void Create() => io.Directory.CreateDirectory(FullName);
     public override bool Exists() => io.Directory.Exists(FullName);
+
+    public override void MoveTo(Directory destination, bool overwrite = true, bool recurse = false)
+    {
+      if (destination is OsDirectory dir)
+        System.IO.Directory.Move(Provider.GetFullPath(Path), Provider.GetFullPath(dir.Path));
+      else
+        throw new NotSupportedException();
+    }
+
+    public override void CopyTo(Directory destination, bool overwrite = true, bool recurse = false)
+    {
+      foreach (var file in GetFiles())
+        file.CopyTo(destination, overwrite);
+
+      if (recurse)
+        foreach (var directory in GetDirectories())
+          directory.CopyTo(destination.Create(directory.Name), overwrite, true);
+    }
   }
 }

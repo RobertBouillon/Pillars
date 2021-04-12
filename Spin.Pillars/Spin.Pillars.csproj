@@ -51,4 +51,10 @@
     <ProjectReference Include="..\..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="FileSystem\Memory\" />
+    <Folder Include="FileSystem\Virtual\" />
+    <Folder Include="FileSystem\Zip\" />
+  </ItemGroup>
+
 </Project>

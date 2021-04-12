@@ -8,7 +8,7 @@ namespace Spin.Pillars.FileSystem
 {
   public abstract class Directory : IBranch
   {
-    public Provider Provider { get; protected set; }
+    public virtual Provider Provider { get; protected set; }
     public Path Path { get; protected set; }
 
     public Directory() { }
@@ -38,8 +38,40 @@ namespace Spin.Pillars.FileSystem
     public virtual Directory GetDirectory(string name) => Provider.GetDirectory(Provider.ParsePath(name, Path));
     public virtual File GetFile(string name) => Provider.GetFile(Provider.ParsePath(name, Path));
 
+    public virtual void MoveTo(Directory destination, bool overwrite = true, bool recurse = false)
+    {
+      foreach (var file in GetFiles())
+        file.MoveTo(destination, overwrite);
+
+      if (recurse)
+        foreach (var directory in GetDirectories())
+          directory.CopyTo(destination.Create(directory.Name), overwrite, true);
+    }
+
+    public virtual void CopyTo(Directory destination, bool overwrite = true, bool recurse = false)
+    {
+      foreach (var file in GetFiles())
+        file.CopyTo(destination, overwrite);
+
+      if (recurse)
+        foreach (var directory in GetDirectories())
+          directory.CopyTo(destination.Create(directory.Name), overwrite, true);
+    }
+
     public abstract bool Exists();
     public abstract void Create();
+    public virtual Directory Create(string subdirectory, bool allowExisting = true)
+    {
+      var sub = GetDirectory(subdirectory);
+      if (sub.Exists())
+        if (allowExisting)
+          return sub;
+        else
+          throw new Exception($"{subdirectory} already exists");
+
+      sub.Create();
+      return sub;
+    }
 
     public virtual bool ContainsFile(string name) => GetFile(name).Exists();
     public virtual bool ContainsDirectory(string name) => GetFile(name).Exists();

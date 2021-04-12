@@ -9,7 +9,7 @@ namespace Spin.Pillars.FileSystem
 {
   public abstract class File : ILeaf
   {
-    public Provider Provider { get; protected set; }
+    public virtual Provider Provider { get; protected set; }
     public Path Path { get; protected set; }
 
     public virtual Directory Parent => Path.Count == 0 ? null : Provider.GetDirectory(Path.MoveUp());
@@ -37,7 +37,7 @@ namespace Spin.Pillars.FileSystem
     public abstract DateTime GetDate(DateStamp stamp, DateTimeKind kind = DateTimeKind.Utc);
     public abstract void SetDate(DateStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc);
 
-    public virtual void CopyTo(Directory directory) => CopyTo(directory.GetFile(Name));
+    public virtual void CopyTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
     public virtual void CopyTo(File file, bool overwrite = false)
     {
       if (overwrite && file.Exists())
@@ -45,7 +45,14 @@ namespace Spin.Pillars.FileSystem
 
       using var source = OpenRead();
       using var dest = file.OpenWrite();
-        source.CopyTo(dest);
+      source.CopyTo(dest);
+    }
+
+    public virtual void MoveTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
+    public virtual void MoveTo(File file, bool overwrite = false)
+    {
+      CopyTo(file, overwrite);
+      Delete();
     }
 
     public virtual string ReadAllText(Encoding encoding = null) => encoding is null ? new io.StreamReader(OpenRead()).DisposeAfter(x => x.ReadToEnd()) : new io.StreamReader(OpenRead(), encoding).DisposeAfter(x => x.ReadToEnd());
@@ -61,7 +68,7 @@ namespace Spin.Pillars.FileSystem
     {
       if (overwrite && Exists())
         Delete();
-      (encoding is null ? new io.StreamWriter(OpenWrite()) : new io.StreamWriter(OpenWrite(), encoding)).DisposeAfter(x => x.Write(String.Join(lineDelimiter ?? Environment.NewLine, lines)));
+      (encoding is null ? new io.StreamWriter(OpenWrite()) : new io.StreamWriter(OpenWrite(), encoding)).DisposeAfter(x => x.Write(string.Join(lineDelimiter ?? System.Environment.NewLine, lines)));
     }
 
     public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }

@@ -38,6 +38,8 @@ namespace Spin.Pillars.FileSystem.OS
     public override string ReadAllText(Encoding encoding = null) => (encoding is null) ? io.File.ReadAllText(FullName) : io.File.ReadAllText(FullName, encoding);
     public override string[] ReadAllLines(Encoding encoding = null) => (encoding is null) ? io.File.ReadAllLines(FullName) : io.File.ReadAllLines(FullName, encoding);
 
+    public override void MoveTo(File file, bool overwrite = false) => io.File.Move(FullName, file.FullName, overwrite);
+
     public override void Write(string text, bool overwrite = true, Encoding encoding = null)
     {
       if (overwrite)
