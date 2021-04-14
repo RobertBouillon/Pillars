@@ -11,7 +11,7 @@ namespace Spin.Pillars.FileSystem.OS
   public class OsDirectory : Directory
   {
     public static OsDirectory CurrentWorking => new OsDirectory(io.Directory.GetCurrentDirectory());
-    public static OsDirectory CurrentExecuting => new OsDirectory(System.Reflection.Assembly.GetExecutingAssembly().Location);
+    public static OsDirectory CurrentExecuting => OsFile.CurrentExecuting.Directory;
 
     public OsProvider OsProvider => Provider as OsProvider;
 

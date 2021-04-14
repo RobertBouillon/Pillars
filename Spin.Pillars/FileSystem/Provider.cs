@@ -26,7 +26,7 @@ namespace Spin.Pillars.FileSystem
     public virtual bool IsPathRooted(string path) => (Name != null && path.StartsWith(Name)) || path.StartsWith(PathSeparator.ToString());
     public virtual Path ParsePath(string path) => new Path(path, PathSeparator);
     public virtual Path ParsePath(string path, Path context) => (IsPathRooted(path)) ? ParsePath(path) : context.Append(ParsePath(path));
-    public abstract DateStamp[] SupportedDateStamps { get; }
+    public abstract TimeStamp[] SupportedDateStamps { get; }
 
     public virtual string GetFullPath(Path path) => Name + PathSeparator + path.ToString(PathSeparator);
     public virtual Path ParseAbsolutePath(string path)

@@ -1,7 +1,9 @@
 ﻿using Spin.Pillars.Hierarchy;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using io = System.IO;
 
@@ -12,7 +14,7 @@ namespace Spin.Pillars.FileSystem
     public virtual Provider Provider { get; protected set; }
     public Path Path { get; protected set; }
 
-    public virtual Directory Parent => Path.Count == 0 ? null : Provider.GetDirectory(Path.MoveUp());
+    public virtual Directory Directory => Path.Count == 0 ? null : Provider.GetDirectory(Path.MoveUp());
     public virtual string Name => Path.Leaf;
     public virtual string Extension => Name.Contains(".") ? Name.Substring(Name.LastIndexOf('.') + 1) : null;
     public virtual string NameLessExtension => Name.Contains(".") ? Name.Substring(0, Name.LastIndexOf('.')) : Name;
@@ -33,9 +35,11 @@ namespace Spin.Pillars.FileSystem
     public abstract io.Stream OpenWrite();
     public abstract void Delete();
     public abstract bool Exists();
+    public abstract bool IsReadOnly { get; set; }
+    public abstract FileSize Size { get; }
 
-    public abstract DateTime GetDate(DateStamp stamp, DateTimeKind kind = DateTimeKind.Utc);
-    public abstract void SetDate(DateStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc);
+    public abstract DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind = DateTimeKind.Utc);
+    public abstract void SetDate(TimeStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc);
 
     public virtual void CopyTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
     public virtual void CopyTo(File file, bool overwrite = false)
@@ -71,6 +75,24 @@ namespace Spin.Pillars.FileSystem
       (encoding is null ? new io.StreamWriter(OpenWrite()) : new io.StreamWriter(OpenWrite(), encoding)).DisposeAfter(x => x.Write(string.Join(lineDelimiter ?? System.Environment.NewLine, lines)));
     }
 
+    public bool WaitExists(TimeSpan? pollInterval = null, TimeSpan? timeout = null)
+    {
+      pollInterval ??= TimeSpan.FromMilliseconds(100);
+      timeout ??= TimeSpan.Zero;
+
+      var timer = new Stopwatch();
+      timer.Start();
+
+      while (!Exists())
+      {
+        Thread.Sleep(pollInterval.Value);
+        if (timeout == TimeSpan.Zero || timeout < timer.Elapsed)
+          return false;
+      }
+
+      return true;
+    }
+
     public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }
     public virtual Task<bool> ExistsAsync() => Task.FromResult(Exists());
     public virtual Task<io.Stream> OpenReadAsync() => Task.FromResult(OpenRead());
@@ -89,7 +111,7 @@ namespace Spin.Pillars.FileSystem
 
     public override string ToString() => FullName;
 
-    IBranch ILeaf.Parent => Parent;
+    IBranch ILeaf.Parent => Directory;
     Path ILeaf.Path => Path;
   }
 }

@@ -8,10 +8,10 @@ namespace Spin.Pillars.FileSystem.OS
 {
   public class OsProvider : Provider
   {
-    private static DateStamp[] _supportedDateStamps = new DateStamp[] { DateStamp.Created, DateStamp.LastAccess, DateStamp.LastWrite };
+    private static TimeStamp[] _supportedDateStamps = new TimeStamp[] { TimeStamp.Created, TimeStamp.LastAccess, TimeStamp.LastWrite };
 
     public static Dictionary<string, OsProvider> Mounts { get; }
-    public override DateStamp[] SupportedDateStamps => _supportedDateStamps;
+    public override TimeStamp[] SupportedDateStamps => _supportedDateStamps;
 
     static OsProvider() => Mounts = io.DriveInfo.GetDrives().Select(x => new OsProvider(x)).ToDictionary(x => x.Name);
 

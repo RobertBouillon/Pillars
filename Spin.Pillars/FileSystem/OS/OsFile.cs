@@ -2,20 +2,30 @@
 using io = System.IO;
 using System.Text;
 using Spin.Pillars.Hierarchy;
+using System.Reflection;
 
 namespace Spin.Pillars.FileSystem.OS
 {
   public class OsFile : File
   {
+    public static OsFile CurrentExecuting => new OsFile(Assembly.GetExecutingAssembly().Location);
+
     public OsProvider OsProvider => Provider as OsProvider;
 
     private io.FileInfo FileInfo => new io.FileInfo(FullName);
 
-    public override Directory Parent => new OsDirectory(OsProvider, Path.MoveUp());
+    public override bool IsReadOnly
+    {
+      get => FileInfo.IsReadOnly;
+      set => FileInfo.IsReadOnly = value;
+    }
+
+    public override FileSize Size => (FileSize)FileInfo.Length;
+    public override OsDirectory Directory => new OsDirectory(OsProvider, Path.MoveUp());
     public override string NameLessExtension => io.Path.GetFileNameWithoutExtension(Name);
-    public override DateTime GetDate(DateStamp stamp, DateTimeKind kind) =>
-      stamp == DateStamp.LastAccess ? kind == DateTimeKind.Utc ? FileInfo.LastAccessTimeUtc : FileInfo.LastAccessTime :
-      stamp == DateStamp.LastWrite ? kind == DateTimeKind.Utc ? FileInfo.LastWriteTimeUtc : FileInfo.LastWriteTime :
+    public override DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind) =>
+      stamp == TimeStamp.LastAccess ? kind == DateTimeKind.Utc ? FileInfo.LastAccessTimeUtc : FileInfo.LastAccessTime :
+      stamp == TimeStamp.LastWrite ? kind == DateTimeKind.Utc ? FileInfo.LastWriteTimeUtc : FileInfo.LastWriteTime :
       throw new NotImplementedException(stamp.ToString());
 
     public OsFile(io.FileInfo file) : this(file.FullName) { }
@@ -51,19 +61,19 @@ namespace Spin.Pillars.FileSystem.OS
         io.File.WriteAllText(OsProvider.GetFullPath(Path), text, encoding);
     }
 
-    public override void SetDate(DateStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc)
+    public override void SetDate(TimeStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc)
     {
-      if (stamp == DateStamp.Created)
+      if (stamp == TimeStamp.Created)
         if (kind == DateTimeKind.Utc)
           FileInfo.CreationTimeUtc = date;
         else
           FileInfo.CreationTime = date;
-      else if (stamp == DateStamp.LastWrite)
+      else if (stamp == TimeStamp.LastWrite)
         if (kind == DateTimeKind.Utc)
           FileInfo.LastWriteTimeUtc = date;
         else
           FileInfo.LastWriteTime = date;
-      else if (stamp == DateStamp.LastAccess)
+      else if (stamp == TimeStamp.LastAccess)
         if (kind == DateTimeKind.Utc)
           FileInfo.CreationTimeUtc = date;
         else

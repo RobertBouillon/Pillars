@@ -37,7 +37,7 @@ namespace Spin.Pillars.Logging.Writers
           if (_queue.TryDequeue(out var log)) //Will only return false on concurrent dequeues. Since we're multi-producer, single-consumer, this is fine.
             _buffer.Add(log);
 
-        Try(() => _writer.Write(_buffer.OrderBy(x => x.EntryTime))).Catch(OnError);
+        Try(() => _writer.Write(_buffer.OrderBy(x => x.Time))).Catch(OnError);
       }
 
       protected override void OnError(ErrorEventArgs e)

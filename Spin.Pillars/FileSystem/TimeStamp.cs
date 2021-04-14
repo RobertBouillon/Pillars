@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Spin.Pillars.FileSystem
 {
-  public enum DateStamp
+  public enum TimeStamp
   {
     Created,
     LastWrite,

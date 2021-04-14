@@ -24,8 +24,11 @@
 
   <ItemGroup>
     <Compile Remove="Logging\Alerts\**" />
+    <Compile Remove="Logging\Writers\**" />
     <EmbeddedResource Remove="Logging\Alerts\**" />
+    <EmbeddedResource Remove="Logging\Writers\**" />
     <None Remove="Logging\Alerts\**" />
+    <None Remove="Logging\Writers\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,10 +40,8 @@
     <Compile Remove="Logging\LogController.cs" />
     <Compile Remove="Logging\Logs.cs" />
     <Compile Remove="Logging\LongCounter.cs" />
-    <Compile Remove="Logging\Writers\CompressedLogFileWatcher.cs" />
-    <Compile Remove="Logging\Writers\LogWatchers.cs" />
-    <Compile Remove="Logging\Writers\LogWatcherState.cs" />
-    <Compile Remove="Logging\Writers\XmlDiskLogWatcher.cs" />
+    <Compile Remove="Module.cs" />
+    <Compile Remove="Runtime.cs" />
   </ItemGroup>
 
   <ItemGroup>
