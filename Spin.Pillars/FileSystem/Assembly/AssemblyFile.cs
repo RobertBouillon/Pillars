@@ -7,29 +7,27 @@ namespace Spin.Pillars.FileSystem.Assembly
 {
   public class AssemblyFile : File
   {
-    public override AssemblyProvider Provider => base.Provider as AssemblyProvider;
+    public override AssemblyFileSystem FileSystem => base.FileSystem as AssemblyFileSystem;
 
-    public override Directory Parent => new AssemblyDirectory(Provider, Path.MoveUp());
-    public override DateTime GetDate(DateStamp stamp, DateTimeKind kind) => throw new NotImplementedException(stamp.ToString());
+    public override Directory Directory => new AssemblyDirectory(FileSystem, Path.MoveUp());
 
-    public AssemblyFile(AssemblyProvider provider, string path)
+    public override bool IsReadOnly
     {
-      #region Validation
-      if (provider is null)
-        throw new ArgumentNullException(nameof(provider));
-      #endregion
-      Provider = provider;
-      Path = new Path(path, Provider.PathSeparator);
+      get => true;
+      set => throw new NotSupportedException();
     }
 
-    public AssemblyFile(AssemblyProvider provider, Path path) : base(provider, path) { }
+    public override FileSize Size => FileSystem.Assembly.GetManifestResourceStream(PathedName).Length;
 
-    public override io.Stream OpenRead() => Provider.Assembly.GetManifestResourceStream(FullName);
+    public override DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind) => throw new NotSupportedException(stamp.ToString());
+
+    public AssemblyFile(AssemblyFileSystem fileSystem, string path) : this(fileSystem, fileSystem.ParsePath(path)) { }
+    public AssemblyFile(AssemblyFileSystem fileSystem, Path path) : base(fileSystem, path) { }
+
+    public override io.Stream OpenRead() => FileSystem.Assembly.GetManifestResourceStream(PathedName);
     public override io.Stream OpenWrite() => throw new NotSupportedException();
-    public override void Delete() => throw new NotSupportedException();
-    public override bool Exists() => Provider.FileIndex.Contains(FullName);
 
     public override void Write(string text, bool overwrite = true, Encoding encoding = null) => throw new NotSupportedException();
-    public override void SetDate(DateStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc) => throw new NotSupportedException();
+    public override void SetDate(TimeStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc) => throw new NotSupportedException();
   }
 }

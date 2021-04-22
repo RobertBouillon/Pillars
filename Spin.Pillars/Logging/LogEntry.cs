@@ -6,56 +6,25 @@ using System.Text;
 
 namespace Spin.Pillars.Logging
 {
-  public class LogEntry
+  public class LogEntry : LogTemplate
   {
     public DateTime Time { get; set; }
-    public List<Object> Data { get; set; }
-
-    public IEnumerable<Tag> Tags => Data.OfType<Tag>();
-    public IEnumerable<Label> Labels => Data.OfType<Label>();
-    public IEnumerable<State> States => Data.OfType<State>();
-    public Message Message => Data.OfType<Message>().SingleOrDefault();
+    public TimeSpan Elapsed => Log.Clock.Time - Time;
 
     public LogEntry(DateTime time, IEnumerable<object> data) => (Time, Data) = (time, data.ToList());
-    public override string ToString()
-    {
-      var message = Message.Text;
-      var builder = new StringBuilder();
-      bool hasMessage = false;
+    //public LogEntry Error(params object[] data) => throw new NotImplementedException();
+    //public LogEntry Close(params object[] data) => throw new NotImplementedException();
 
-      builder.Append(Time.ToString(@"hh\:mm\:ss\.fff"));
-      builder.Append(' ');
+    public LogEntry Finish(params object[] data) => Update("Finished", data);
+    public LogEntry Update(string status, params object[] data) =>
+      Log.Write(Data
+        .Except(x => x is Tag tag && (tag.Text == "Status" || tag.Text == "Elapsed"))
+        .Append(new Tag("Status", status))
+        .Append(new Tag("Elapsed", Log.Clock.Time - Time))
+        .Concat(data));
 
-      if (message is not null)
-      {
-        hasMessage = true;
-        var tags = Tags.ToDictionary(x => x.Text, x => x.Value);
-        builder.Append(message);
-        foreach (var tag in tags)
-          builder.Replace($"{{{tag.Key}}}", tag.Value.ToString());
-        hasMessage = true;
-      }
+    public LogEntry Failed(params object[] data) => Update("Failed", data.Append(Log.ErrorData));
 
-      var data = Data.Except(EnumerableEx.Single((object)Message)).ToList();
-      if (data.Any())
-      {
-        if (hasMessage)
-          builder.Append(" (");
-
-        foreach (var meta in data)
-        {
-          builder.Append(meta);
-          builder.Append(", ");
-        }
-
-        if (hasMessage)
-        {
-          builder.Remove(builder.Length - 2, 2);
-          builder.Append(')');
-        }
-      }
-
-      return builder.ToString();
-    }
+    public override string ToString() => Time.ToString(@"hh\:mm\:ss\.fff") + ' ' + base.ToString();
   }
 }

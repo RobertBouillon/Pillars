@@ -23,10 +23,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FileSystem\Virtual\**" />
     <Compile Remove="Logging\Alerts\**" />
     <Compile Remove="Logging\Writers\**" />
+    <EmbeddedResource Remove="FileSystem\Virtual\**" />
     <EmbeddedResource Remove="Logging\Alerts\**" />
     <EmbeddedResource Remove="Logging\Writers\**" />
+    <None Remove="FileSystem\Virtual\**" />
     <None Remove="Logging\Alerts\**" />
     <None Remove="Logging\Writers\**" />
   </ItemGroup>
@@ -37,6 +40,8 @@
     <Compile Remove="FileSystem\FileSystemPath.cs" />
     <Compile Remove="FileSystem\OS\MountProvider.cs" />
     <Compile Remove="LogBuffer.cs" />
+    <Compile Remove="Logging\Data\Scope.cs" />
+    <Compile Remove="Logging\Data\State.cs" />
     <Compile Remove="Logging\LogController.cs" />
     <Compile Remove="Logging\Logs.cs" />
     <Compile Remove="Logging\LongCounter.cs" />
@@ -50,12 +55,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Supergene\Spin.Supergene\Spin.Supergene.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="FileSystem\Memory\" />
-    <Folder Include="FileSystem\Virtual\" />
-    <Folder Include="FileSystem\Zip\" />
   </ItemGroup>
 
 </Project>

@@ -85,7 +85,71 @@ State Transitions support the following use-cases:
    when the time changes. This event is tracked in the log and used by a log reader to provide an accurate time that reflects the clock of the machine at the time the event occurred without
    losing that event's temporal position relative to other events.
 
+# Scratch Notes
+An operation is uniquely identified by its DATA when it's created (assumption. Let's see if it works).  
 
+- Category
+
+Sync Client
+- Session (Host:X, Mirror:X)
+  - Downloading {File}
+
+Sync Host
+- Session (IP:X)
+  - Uploading {File}
+
+
+# Patterns
+
+## Operation -> Success / Fail
+"Doing SOMETHING..."
+"Error occurred doing SOMETHING"
+"SOMETHING succeeded in 00:00.000"
+
+## Stateful Operation
+"Doing SOMETHING..."
+"SOMETHING started..."
+"SOMETHING paused..."
+"SOMETHING resumed..."
+"SOMETHING finished"
+"SOMETHING failed"
+
+## Persistent State Changed
+"SOMETHING Status: Offline"
+"SOMETHING Status: Online"
+
+
+# Use-Cases
+
+# Design
+
+## Problems
+1. *Multi-threaded Log Spam* - Log is usable / unreadable when logging is multi-threaded. Hard to correlate log entries (e.g. Activity started / ended/ failed)
+2. *Correlating errors to related log entries* - When a failure occurs, limit the log entries to those related to the failure.
+3. *Text-based searches* Can only perform text-based searches on text entries.
+3a. Want to Parse log for alert states, generating tickets, etc
+4. Logs are very large, which can cause performance / storage problems that cause logs to be disabled although they're useful
+5. It's difficult to track application performance in production, but we have event logs. Why can't we use those?
+
+
+
+
+## Solutions
+1. *Log Contexts* [Committed] - Logs are associated with a common context, allowing unrelated log messages to be filtered out.
+### Solves
+  1. *Multi-threaded Log Spam* - Logs on different threads will have different contexts
+  2. *Correlating errors to related log entries*
+2. *Binary Log Files*
+
+### Challenges
+### Opportunities
+
+
+
+- [Opportunity]
+- Obtain statistics of events in production
+  - Machine-readable data storage
+- API & data structure conducive to common patterns (listed above)
 
 
 # TO-DO
@@ -93,3 +157,5 @@ State Transitions support the following use-cases:
 Custom formatters for interpolater. Use-Case: "Uploading {FileCount} files ({FileSize})" where FileSize is a decimal or double, and we want to use FileSize to format it.
 Tag API: Currently always have to cast value to object. See if this can be cleaned up. Params ILogMetaData?
 When starting and stopping (state transitions), there really needs to be a unique ID. (Pass back reference that can be triggered?)
+
+
