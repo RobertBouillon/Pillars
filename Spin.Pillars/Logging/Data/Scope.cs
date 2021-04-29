@@ -8,10 +8,10 @@ namespace Spin.Pillars.Logging.Data
 {
   public class Scope
   {
-    public Scope Parent { get; set; }
+    public string[] Path { get; set; }
 
-    public Scope() { }
-    public Scope(Scope parent) => Parent = parent;
+    public Scope(string[] path) => Path = path;
 
+    public override string ToString() => Path.Join('\\');
   }
 }

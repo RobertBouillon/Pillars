@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Spin.Pillars.Logging
 {
-  public class LogTemplate
+  public class LogTemplate : ILogger
   {
     public static Regex _tagParser = new Regex(@"\{([^\}]+)\}");
     public static Tag CreateTypeTag(Type type) => new Tag("Type", type.FullName);
@@ -27,36 +27,8 @@ namespace Spin.Pillars.Logging
     public LogEntry Write(string message, params object[] data) => Log.Write(Data.Concat(data).Concat(new Message(message)));
     public LogEntry Write(params object[] data) => Log.Write(Data.Concat(data));
     public LogEntry StartOperation(string operationName, params object[] data) => Write(data.Append(new Tag("Operation", operationName)).Append(new Tag("Status", Log.StartingOperationStatus)));
-    public virtual LogEntry Error(params object[] data) => Write(data.Append(Log.ErrorData));
 
-    public LogEntry Catch(string message, Action action, params object[] data)
-    {
-      var op = StartOperation(message, data);
-      try
-      {
-        action();
-        return op.Finish();
-      }
-      catch (Exception ex)
-      {
-        return op.Failed(data.Append(ex).Append(Log.ErrorData));
-      }
-    }
-
-    public LogEntry Capture(string message, Action action, params object[] data)
-    {
-      var op = StartOperation(message, data);
-      try
-      {
-        action();
-        return op.Finish();
-      }
-      catch (Exception ex)
-      {
-        op.Failed(data.Append(ex).Append(Log.ErrorData));
-        throw;
-      }
-    }
+    public LogTemplate Extend(params object[] data) => new(Data.Concat(data));
 
     //public LogEntry Finish(string state, params object[] data) => Log.Write(Data.Concat(data).Concat(new State(state, false)));
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Spin.Pillars.Hierarchy
 {
-  public struct Path : IComparable<Path>
+  public struct Path : IComparable<Path>, IFormattable
   {
     public static Path Parse(string path, char separator) => new(path.Split(separator));
     public static Path Parse(string path, string separator) => new(path.Split(new[] { separator }, StringSplitOptions.None));
@@ -85,5 +85,10 @@ namespace Spin.Pillars.Hierarchy
     public bool Equals(Path o) => Nodes.SequenceEqual(o.Nodes);
     public override int GetHashCode() => Nodes.Select(x => x.GetHashCode()).Aggregate((x, y) => x ^ y);
     public override string ToString() => Nodes.Join('\\');
+
+    public string ToString(string format, IFormatProvider formatProvider) =>
+      (format.ToLower() == "leaf") ? Leaf :
+      (format.Length == 1) ? ToString(format[0]) :
+      ToString();
   }
 }

@@ -130,6 +130,7 @@ Sync Host
 3a. Want to Parse log for alert states, generating tickets, etc
 4. Logs are very large, which can cause performance / storage problems that cause logs to be disabled although they're useful
 5. It's difficult to track application performance in production, but we have event logs. Why can't we use those?
+6. Culture-specific logs. Logs should be stored culture-agnostic, if posssible, with values rendered to the local culture during reading
 
 
 
