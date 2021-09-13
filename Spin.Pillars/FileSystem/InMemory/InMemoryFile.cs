@@ -10,7 +10,7 @@ namespace Spin.Pillars.FileSystem.InMemory
     public override InMemoryFileSystem FileSystem => base.FileSystem as InMemoryFileSystem;
 
     private MemoryFile _memoryFile;
-    private MemoryFile MemoryFile => _memoryFile ?? FileSystem.FindFile(Path);
+    private MemoryFile MemoryFile => _memoryFile ??= FileSystem.FindFile(Path);
 
     public override bool IsReadOnly
     {
@@ -18,7 +18,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       set => MemoryFile.IsReadOnly = value;
     }
 
-    public override FileSize Size => _memoryFile is null ? throw new Exception("File not found") : _memoryFile.Size;
+    public override FileSize Size => MemoryFile is null ? throw new Exception("File not found") : MemoryFile.Size;
     public override InMemoryDirectory Directory => new InMemoryDirectory(FileSystem, Path.MoveUp());
     public override string NameLessExtension => io.Path.GetFileNameWithoutExtension(Name);
 
@@ -32,7 +32,13 @@ namespace Spin.Pillars.FileSystem.InMemory
     internal InMemoryFile(InMemoryFileSystem fileSystem, MemoryFile file) : base(fileSystem, file.Path) { }
     public InMemoryFile(InMemoryFileSystem fileSystem, Path path) : base(fileSystem, path) { }
 
-    public override io.Stream OpenRead() => MemoryFile.Stream;
+    public override io.Stream OpenRead()
+    {
+      if (MemoryFile is null)
+        throw new Exception($"File not found: " + PathedName);
+      return MemoryFile.Stream;
+    }
+
     public override io.Stream OpenWrite()
     {
       if (MemoryFile is null)
@@ -89,5 +95,6 @@ namespace Spin.Pillars.FileSystem.InMemory
 
     public override bool Cache() => (_memoryFile = FileSystem.FindFile(Path)) is not null;
     public override void ClearCache() => _memoryFile = null;
-  }    
+    protected override void DisposeManaged() => _memoryFile.Dispose();
+  }
 }

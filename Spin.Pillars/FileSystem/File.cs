@@ -9,7 +9,7 @@ using io = System.IO;
 
 namespace Spin.Pillars.FileSystem
 {
-  public abstract class File : ILeaf
+  public abstract class File : Disposable, ILeaf
   {
     public virtual FileSystem FileSystem { get; }
     public Path Path { get; }
@@ -47,7 +47,7 @@ namespace Spin.Pillars.FileSystem
     public virtual void Delete() => FileSystem.DeleteFile(Path);
 
     public void CopyTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
-    public virtual void CopyTo(File file, bool overwrite = false) => FileSystem.Copy(this, file);
+    public virtual void CopyTo(File file, bool overwrite = false) => FileSystem.Copy(this, file, overwrite);
 
     public void MoveTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
     public virtual void MoveTo(File file, bool overwrite = false)
@@ -60,6 +60,7 @@ namespace Spin.Pillars.FileSystem
       Delete();
     }
 
+    public virtual byte[] ReadAllBytes() => new io.MemoryStream().DisposeAfter(x => { OpenRead().DisposeAfter(y => y.CopyTo(x)); return x.ToArray(); });
     public virtual string ReadAllText(Encoding encoding = null) => encoding is null ? new io.StreamReader(OpenRead()).DisposeAfter(x => x.ReadToEnd()) : new io.StreamReader(OpenRead(), encoding).DisposeAfter(x => x.ReadToEnd());
     public virtual string[] ReadAllLines(Encoding encoding = null) => ReadAllText(encoding).Split('\n');
     public virtual void Write(string text, bool overwrite = true, Encoding encoding = null)
@@ -118,7 +119,7 @@ namespace Spin.Pillars.FileSystem
       #endregion
       using var source = await OpenReadAsync();
       using var dest = await file.OpenWriteAsync();
-        await source.CopyToAsync(dest);
+      await source.CopyToAsync(dest);
     }
 
     public virtual Task<string> ReadAllTextAsync(Encoding encoding = null) => Task.FromResult(ReadAllText());

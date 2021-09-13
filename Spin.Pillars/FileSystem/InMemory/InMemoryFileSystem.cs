@@ -19,7 +19,7 @@ namespace Spin.Pillars.FileSystem.InMemory
     public override char PathSeparator => _pathSeparator;
 
     public InMemoryFileSystem() => _root = new MemoryDirectory(PathSeparator.ToString());
-    public InMemoryFileSystem(char pathSeparator) => _pathSeparator = pathSeparator;
+    public InMemoryFileSystem(char pathSeparator) : this() => _pathSeparator = pathSeparator;
 
     public override Directory GetDirectory(Path path) => new InMemoryDirectory(this, path);
     public override File GetFile(Path path) => new InMemoryFile(this, path);

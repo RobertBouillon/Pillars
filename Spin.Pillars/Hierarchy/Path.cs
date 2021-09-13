@@ -87,6 +87,7 @@ namespace Spin.Pillars.Hierarchy
     public override string ToString() => Nodes.Join('\\');
 
     public string ToString(string format, IFormatProvider formatProvider) =>
+      (format is null) ? ToString() :
       (format.ToLower() == "leaf") ? Leaf :
       (format.Length == 1) ? ToString(format[0]) :
       ToString();
