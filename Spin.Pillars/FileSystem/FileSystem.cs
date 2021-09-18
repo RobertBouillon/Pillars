@@ -69,6 +69,11 @@ namespace Spin.Pillars.FileSystem
     public abstract void DeleteDirectory(Path path);
     public abstract void CreateFile(Path path);
     public abstract void CreateDirectory(Path path);
+    public virtual void RenameFile(Path path, string name)
+    {
+      var source = GetFile(path);
+      source.MoveTo(source.Directory.GetFile(name));
+    }
 
     public virtual bool FileExists(string path) => FileExists(Path.Parse(path, PathSeparator));
     public virtual bool DirectoryExists(string path) => DirectoryExists(Path.Parse(path, PathSeparator));

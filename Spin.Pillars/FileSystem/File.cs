@@ -45,6 +45,7 @@ namespace Spin.Pillars.FileSystem
     public virtual void Create() => FileSystem.CreateFile(Path);
     public virtual bool Exists() => FileSystem.FileExists(Path);
     public virtual void Delete() => FileSystem.DeleteFile(Path);
+    public virtual void Rename(string name) => FileSystem.RenameFile(Path, name);
 
     public void CopyTo(Directory directory, bool overwrite = false) => CopyTo(directory.GetFile(Name), overwrite);
     public virtual void CopyTo(File file, bool overwrite = false) => FileSystem.Copy(this, file, overwrite);
