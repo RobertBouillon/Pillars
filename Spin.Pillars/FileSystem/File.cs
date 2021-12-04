@@ -9,12 +9,12 @@ using io = System.IO;
 
 namespace Spin.Pillars.FileSystem
 {
-  public abstract class File : Disposable, ILeaf
+  public abstract class File : Disposable, IEntity
   {
     public virtual FileSystem FileSystem { get; }
     public Path Path { get; }
 
-    public virtual Directory Directory => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());
+    public virtual Directory ParentDirectory => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());
     public virtual string Name => Path.Leaf;
     public virtual string Extension => Name.Contains(".") ? Name.Substring(Name.LastIndexOf('.') + 1) : null;
     public virtual string NameLessExtension => Name.Contains(".") ? Name.Substring(0, Name.LastIndexOf('.')) : Name;
@@ -38,6 +38,7 @@ namespace Spin.Pillars.FileSystem
     public virtual bool Cache() => false;
     public virtual void ClearCache() { }
     public virtual bool IsCached => false;
+    public virtual bool IsLocked => false;
 
     public abstract DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind = DateTimeKind.Utc);
     public abstract void SetDate(TimeStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc);
@@ -130,7 +131,7 @@ namespace Spin.Pillars.FileSystem
 
     public override string ToString() => PathedName;
 
-    IBranch ILeaf.Parent => Directory;
+    IBranch ILeaf.Parent => ParentDirectory;
     Path ILeaf.Path => Path;
   }
 }

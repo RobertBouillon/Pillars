@@ -31,7 +31,7 @@ namespace Spin.Pillars.FileSystem.OS
     }
 
     public override FileSize Size => FileInfo.Length;
-    public override OsDirectory Directory => new OsDirectory(FileSystem, Path.MoveUp());
+    public override OsDirectory ParentDirectory => new OsDirectory(FileSystem, Path.MoveUp());
     public override string NameLessExtension => io.Path.GetFileNameWithoutExtension(Name);
     public override DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind) =>
       stamp == TimeStamp.LastAccess ? kind == DateTimeKind.Utc ? FileInfo.LastAccessTimeUtc : FileInfo.LastAccessTime :
@@ -94,6 +94,22 @@ namespace Spin.Pillars.FileSystem.OS
           FileInfo.LastAccessTimeUtc = date;
       else
         throw new NotImplementedException(stamp.ToString());
+    }
+
+    public override bool IsLocked
+    {
+      get
+      {
+        try
+        {
+          using (var stream = io.File.OpenRead(PathedName))
+            return false;
+        }
+        catch (io.IOException)
+        {
+          return true;
+        }
+      }
     }
   }
 }

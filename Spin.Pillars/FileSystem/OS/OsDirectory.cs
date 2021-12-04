@@ -8,10 +8,10 @@ using System.Reflection;
 
 namespace Spin.Pillars.FileSystem.OS
 {
-  public class OsDirectory : Directory
+  public class OsDirectory : Directory, IObservable
   {
     public static OsDirectory CurrentWorking => Parse(io.Directory.GetCurrentDirectory());
-    public static OsDirectory CurrentExecuting => OsFile.CurrentExecuting.Directory;
+    public static OsDirectory CurrentExecuting => OsFile.CurrentExecuting.ParentDirectory;
 
     public static OsDirectory Create(io.DirectoryInfo directory) => Parse(directory.FullName);
     public static OsDirectory Parse(string path)
@@ -23,8 +23,13 @@ namespace Spin.Pillars.FileSystem.OS
       return new OsDirectory(fileSystem, Path.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
     }
 
+    public Observer Observe(ChangeTypes types, string filter = null)
+    {
+      return new OsObserver(this, types);
+    }
+
     public override OsFileSystem FileSystem => base.FileSystem as OsFileSystem;
-    public override OsDirectory Parent => Path.Count == 0 ? null : new OsDirectory(FileSystem, Path.MoveUp());
+    public override OsDirectory ParentDirectory => Path.Count == 0 ? null : new OsDirectory(FileSystem, Path.MoveUp());
     public OsDirectory(OsFileSystem fileSystem, Path path) : base(fileSystem, path) { }
   }
 }

@@ -25,7 +25,7 @@ namespace Spin.Pillars.FileSystem.Zip
     public override FileSize Size => _zipEntry is null ? throw new Exception("File not found") : _zipEntry.Length;
     public FileSize CompressedSize => _zipEntry is null ? throw new Exception("File not found") : _zipEntry.CompressedLength;
 
-    public override ZipDirectory Directory => new ZipDirectory(FileSystem, Path.MoveUp());
+    public override ZipDirectory ParentDirectory => new ZipDirectory(FileSystem, Path.MoveUp());
 
     public override bool IsCached => _zipEntry is not null;
 

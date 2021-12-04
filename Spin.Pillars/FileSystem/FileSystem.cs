@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using io = System.IO;
 
 namespace Spin.Pillars.FileSystem
@@ -56,11 +57,12 @@ namespace Spin.Pillars.FileSystem
       Name = name;
     }
 
+    public virtual Directory GetDirectory(string path) => GetDirectory(ParsePath(path));
     public abstract Directory GetDirectory(Path path);
+    public virtual File GetFile(string path) => GetFile(ParsePath(path));
     public abstract File GetFile(Path path);
-    public virtual bool IsPathRooted(string path) => (Name != null && path.StartsWith(Name)) || path.StartsWith(PathSeparator.ToString());
     public virtual Path ParsePath(string path) => Path.Parse(path, PathSeparator);
-    public virtual Path ParsePath(string path, Path context) => (IsPathRooted(path)) ? ParsePath(path) : context.Append(ParsePath(path));
+    public virtual Path ParsePath(string path, Path context) => Path.IsPathRooted(path, PathSeparator) ? ParsePath(path) : context.Append(ParsePath(path));
     public abstract IEnumerable<TimeStamp> SupportedDateStamps { get; }
 
     public abstract bool FileExists(Path path);
@@ -72,7 +74,7 @@ namespace Spin.Pillars.FileSystem
     public virtual void RenameFile(Path path, string name)
     {
       var source = GetFile(path);
-      source.MoveTo(source.Directory.GetFile(name));
+      source.MoveTo(source.ParentDirectory.GetFile(name));
     }
 
     public virtual bool FileExists(string path) => FileExists(Path.Parse(path, PathSeparator));
@@ -82,10 +84,12 @@ namespace Spin.Pillars.FileSystem
     public virtual void CreateFile(string path) => CreateFile(Path.Parse(path, PathSeparator));
     public virtual void CreateDirectory(string path) => CreateDirectory(Path.Parse(path, PathSeparator));
 
+    public virtual Task<IEnumerable<Path>> GetFilesAsync(Path directory) => Task.FromResult(GetFiles(directory));
+    public virtual Task<IEnumerable<Path>> GetDirectoriesAsync(Path directory) => Task.FromResult(GetDirectories(directory));
     public abstract IEnumerable<Path> GetFiles(Path directory);
     public abstract IEnumerable<Path> GetDirectories(Path directory);
 
-    public virtual string GetPathedName(Path path) => Name + PathSeparator + path.ToString(PathSeparator);
+    public virtual string GetPathedName(Path path) => path.ToString(PathSeparator);
     public virtual Path ParseAbsolutePath(string path)
     {
       #region Validation
@@ -147,5 +151,8 @@ namespace Spin.Pillars.FileSystem
       }
       return true;
     }
+
+    public virtual IEntity this[string path] => this[ParsePath(path)];
+    public virtual IEntity this[Path path] => path.IsBranch ? GetDirectory(path) : GetFile(path);
   }
 }

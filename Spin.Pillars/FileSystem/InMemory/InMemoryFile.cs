@@ -19,7 +19,7 @@ namespace Spin.Pillars.FileSystem.InMemory
     }
 
     public override FileSize Size => MemoryFile is null ? throw new Exception("File not found") : MemoryFile.Size;
-    public override InMemoryDirectory Directory => new InMemoryDirectory(FileSystem, Path.MoveUp());
+    public override InMemoryDirectory ParentDirectory => new InMemoryDirectory(FileSystem, Path.MoveUp());
     public override string NameLessExtension => io.Path.GetFileNameWithoutExtension(Name);
 
     public override bool IsCached => _memoryFile is not null;
@@ -56,10 +56,10 @@ namespace Spin.Pillars.FileSystem.InMemory
       #endregion
       if (file is InMemoryFile mf)
       {
-        var md = mf.Directory.MemoryDirectory;
+        var md = mf.ParentDirectory.MemoryDirectory;
         if (md.Files.TryGetValue(file.Name, out var existing))
           if (overwrite)
-            throw new Exception($"{file.Name} already exists in {mf.Directory}");
+            throw new Exception($"{file.Name} already exists in {mf.ParentDirectory}");
           else
             existing.Delete();
 

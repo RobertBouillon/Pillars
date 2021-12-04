@@ -16,7 +16,7 @@ namespace Spin.Pillars.FileSystem.InMemory
     internal MemoryDirectory MemoryDirectory => _memoryDirectory ?? FileSystem.FindDirectory(Path);
 
     public override InMemoryFileSystem FileSystem => base.FileSystem as InMemoryFileSystem;
-    public override InMemoryDirectory Parent => Path.Count == 0 ? null : new InMemoryDirectory(FileSystem, Path.MoveUp());
+    public override InMemoryDirectory ParentDirectory => Path.Count == 0 ? null : new InMemoryDirectory(FileSystem, Path.MoveUp());
     public override void Purge()
     {
       MemoryDirectory.Files.Clear();

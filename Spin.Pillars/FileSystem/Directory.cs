@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Spin.Pillars.FileSystem
 {
-  public abstract class Directory : IBranch
+  public abstract class Directory : IBranch, IEntity
   {
     public virtual FileSystem FileSystem { get; }
     public Path Path { get; }
@@ -22,7 +22,7 @@ namespace Spin.Pillars.FileSystem
       Path = path;
     }
 
-    public virtual Directory Parent => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());
+    public virtual Directory ParentDirectory => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());
     public virtual string Name => Path.Leaf ?? FileSystem.PathSeparator.ToString();
     public virtual string PathedName => FileSystem.GetPathedName(Path);
 
@@ -30,10 +30,10 @@ namespace Spin.Pillars.FileSystem
     public virtual IEnumerable<Directory> GetDirectories() => FileSystem.GetDirectories(Path).Select(x => FileSystem.GetDirectory(x));
 
     public virtual IEnumerable<File> FindFiles(Func<File, bool> predicate = null, bool recursive = false) => (recursive ? this.Traverse(x => x.GetDirectories()).SelectMany(x => x.GetFiles()) : GetFiles()).Where(predicate ?? (x => true));
-    public virtual IEnumerable<Directory> FindDirectories(Func<Directory, bool> predicate = null, bool recursive = false) => (recursive ? this.Traverse(x => x.Parent).SelectMany(x => x.GetDirectories()) : GetDirectories()).Where(predicate ?? (x => true));
+    public virtual IEnumerable<Directory> FindDirectories(Func<Directory, bool> predicate = null, bool recursive = false) => (recursive ? this.Traverse(x => x.ParentDirectory).SelectMany(x => x.GetDirectories()) : GetDirectories()).Where(predicate ?? (x => true));
 
-    public virtual Task<IEnumerable<File>> GetFilesAsync() => Task.FromResult(GetFiles());
-    public virtual Task<IEnumerable<Directory>> GetDirectoriesAsync() => Task.FromResult(GetDirectories());
+    public virtual async Task<IEnumerable<File>> GetFilesAsync() => (await FileSystem.GetFilesAsync(Path)).Select(x => FileSystem.GetFile(x));
+    public virtual async Task<IEnumerable<Directory>> GetDirectoriesAsync() => (await FileSystem.GetDirectoriesAsync(Path)).Select(x => FileSystem.GetDirectory(x));
 
     public virtual Directory GetDirectory(Path path) => FileSystem.GetDirectory(Path.Append(path));
     public virtual Directory GetDirectory(string name) => FileSystem.GetDirectory(FileSystem.ParsePath(name, Path));
@@ -65,6 +65,9 @@ namespace Spin.Pillars.FileSystem
           directory.CopyTo(destination.Create(directory.Name), overwrite, true);
     }
 
+    public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }
+    public virtual Task<bool> ExistsAsync() => Task.FromResult(Exists());
+
     public virtual bool Exists() => FileSystem.DirectoryExists(Path);
     public virtual void Create() => FileSystem.CreateDirectory(Path);
     public virtual void Delete() => FileSystem.DeleteDirectory(Path);
@@ -93,7 +96,7 @@ namespace Spin.Pillars.FileSystem
 
     IEnumerable<ILeaf> IBranch.Children => GetFiles().Cast<ILeaf>().Concat(GetDirectories());
     IEnumerable<IBranch> IBranch.Branches => GetDirectories().Cast<IBranch>();
-    IBranch ILeaf.Parent => Parent;
+    IBranch ILeaf.Parent => ParentDirectory;
     Path ILeaf.Path => Path;
   }
 }

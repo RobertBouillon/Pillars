@@ -9,7 +9,7 @@ namespace Spin.Pillars.FileSystem.Assembly
   {
     public override AssemblyFileSystem FileSystem => base.FileSystem as AssemblyFileSystem;
 
-    public override Directory Directory => new AssemblyDirectory(FileSystem, Path.MoveUp());
+    public override Directory ParentDirectory => new AssemblyDirectory(FileSystem, Path.MoveUp());
 
     public override bool IsReadOnly
     {
