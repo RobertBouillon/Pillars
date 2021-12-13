@@ -12,6 +12,7 @@ namespace Spin.Pillars.FileSystem.OS
   {
     public static OsDirectory CurrentWorking => Parse(io.Directory.GetCurrentDirectory());
     public static OsDirectory CurrentExecuting => OsFile.CurrentExecuting.ParentDirectory;
+    public static OsDirectory Temp => Parse(io.Path.GetTempPath());
 
     public static OsDirectory Create(io.DirectoryInfo directory) => Parse(directory.FullName);
     public static OsDirectory Parse(string path)
