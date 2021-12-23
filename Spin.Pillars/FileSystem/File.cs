@@ -124,6 +124,7 @@ namespace Spin.Pillars.FileSystem
       await source.CopyToAsync(dest);
     }
 
+    public virtual Task<byte[]> ReadAllBytesAsync(Encoding encoding = null) => Task.FromResult(ReadAllBytes());
     public virtual Task<string> ReadAllTextAsync(Encoding encoding = null) => Task.FromResult(ReadAllText());
     public virtual Task<string[]> ReadAllLinesAsync(Encoding encoding = null) => Task.FromResult(ReadAllLines());
     public virtual Task WriteAsync(string text, bool overwrite = true, Encoding encoding = null) { Write(text, overwrite, encoding); return Task.CompletedTask; }
