@@ -77,9 +77,9 @@ namespace Spin.Pillars.Logging
     public LogEntry Error(params object[] data) => Write(data.Append(Log.ErrorData));
 
     public LogEntry Write(Exception ex) => Log.Write(Path, ex);
-    public LogEntry Write(string message, IEnumerable<object> data) => Log.Write(Path, data.Append(new Message(message)));
+    public LogEntry Write(string message, IEnumerable<object> data) => Log.Write(Path, MakeTags(message, data).Cast<Object>().Append(new Message(message)));
     public LogEntry Write(IEnumerable<object> data) => Log.Write(Path, data);
-    public LogEntry Write(string message, params object[] data) => Log.Write(Path, data.Append(new Message(message)));
+    public LogEntry Write(string message, params object[] data) => Log.Write(Path, MakeTags(message, data).Cast<Object>().Append(new Message(message)));
     public LogEntry Write(params object[] data) => Log.Write(Path, data);
 
     public LogEntry Update(string status, params object[] data) => Update(status, (IEnumerable<object>)data);
@@ -90,5 +90,27 @@ namespace Spin.Pillars.Logging
 
     public LogEntry Failed(params object[] data) => Update("Failed", data.Append(Log.ErrorData));
     public LogEntry Finish(params object[] data) => Update(Log.FinishedOperationStatus, data);
+    public IEnumerable<Tag> MakeTags(string message, IEnumerable<object> data)
+    {
+      int index = 0;
+      bool open = false;
+      int start = 0;
+      var e = message.GetEnumerator();
+      var datas = data.ToQueue();
+      while (e.MoveNext())
+      {
+        if (open && e.Current == '}')
+        {
+          yield return new Tag(message.Substring(start, index - start), datas.Dequeue());
+          open = false;
+        }
+        else if (!open && e.Current == '{')
+        {
+          start = index + 1;
+          open = true;
+        }
+        index++;
+      }
+    }
   }
 }
