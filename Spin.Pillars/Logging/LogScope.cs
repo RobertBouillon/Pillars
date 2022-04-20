@@ -43,7 +43,6 @@ namespace Spin.Pillars.Logging
       return log;
     }
 
-    public LogEntry Start(params object[] data) => Log.Write(data.Append(new Tag("Status", "Started")));
 
     public LogEntry Catch(string scope, Action action, params object[] data)
     {
@@ -88,6 +87,7 @@ namespace Spin.Pillars.Logging
         .Append(new Tag("Status", status))
         .Append(new Tag("Elapsed", Elapsed)));
 
+    public LogEntry Start(params object[] data) => Update("Started", data);
     public LogEntry Failed(params object[] data) => Update("Failed", data.Append(Log.ErrorData));
     public LogEntry Finish(params object[] data) => Update(Log.FinishedOperationStatus, data);
     public IEnumerable<Tag> MakeTags(string message, IEnumerable<object> data)

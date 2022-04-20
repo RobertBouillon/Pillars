@@ -1,4 +1,10 @@
-﻿# Concepts
+﻿# Usage Guidelines & Examples
+
+## 
+
+
+
+# Concepts
 
 Event logs record events taking place in the execution of a system in order to provide an audit trail that can be used to understand the activity of the system and to diagnose problems. 
 -- [Wikipedia](https://en.wikipedia.org/wiki/Log_file)
