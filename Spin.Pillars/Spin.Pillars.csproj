@@ -49,6 +49,7 @@
     <Compile Remove="Logging\LongCounter.cs" />
     <Compile Remove="Module.cs" />
     <Compile Remove="Runtime.cs" />
+    <Compile Remove="Workers\TcpConnectionWorker_Task.cs" />
   </ItemGroup>
 
   <ItemGroup>

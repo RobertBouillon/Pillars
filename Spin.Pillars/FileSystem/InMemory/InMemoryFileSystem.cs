@@ -37,21 +37,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       return file;
     }
 
-    internal bool TryFindFile(Path path, out MemoryFile file)
-    {
-      var dir = _root;
-      foreach (var item in path.Branches)
-        if (!dir.Directories.TryGetValue(item, out dir))
-        {
-          file = null;
-          return false;
-        }
-
-      if (!dir.Files.TryGetValue(path.Leaf, out file))
-        return false;
-
-      return true;
-    }
+    internal bool TryFindFile(Path path, out MemoryFile file) => (file = FindFile(path)) is not null;
 
     internal MemoryDirectory FindDirectory(Path path)
     {

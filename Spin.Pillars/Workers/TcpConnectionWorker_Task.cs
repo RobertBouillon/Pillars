@@ -1,14 +1,23 @@
-﻿using System;
-using System.Net;
+﻿//DO NOT DELETE: This is excluded from the project, but kept in souce control as a demonstration
+//               of the difference between IAsyncResult and Task pattern implementations of this class
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Spin.Pillars.Workers
 {
-  public class TcpConnectionWorker
+  internal class TcpConnectionWorker_Task : Worker
   {
     private TcpListener _tcpListener;
+    private Task _task;
+    private CancellationTokenSource _cancellationTokenSource = new();
 
-    public TcpConnectionWorker(IPEndPoint ep)
+    public TcpConnectionWorker_Task(string name, IPEndPoint ep)
     {
       #region Validation
       if (ep == null)
@@ -22,22 +31,32 @@ namespace Spin.Pillars.Workers
     private void AcceptNext()
     {
       _tcpListener.Start();
-      _tcpListener.BeginAcceptTcpClient(AcceptNext, this);
+      _task = _tcpListener
+        .AcceptTcpClientAsync(_cancellationTokenSource.Token)
+        .AsTask()
+        .ContinueWith(OnClientConnected);
     }
 
-    private void AcceptNext(IAsyncResult result)
-    {
-      if (_isStopped)
-        return;
-      OnClientConnected(_tcpListener.EndAcceptTcpClient(result));
-      AcceptNext();
-    }
-
-    private bool _isStopped;
     public void Stop()
     {
+      _cancellationTokenSource.Cancel();
       _tcpListener.Stop();
-      _isStopped = true;
+    }
+
+    private void OnClientConnected(Task<TcpClient> client)
+    {
+      if (client.IsCompletedSuccessfully)
+      {
+        OnClientConnected(client.Result);
+        _tcpListener.Start();
+        AcceptNext();
+      }
+      else if (client.IsCanceled)
+      {
+        return;
+      }
+      else
+        OnError(client.Exception);
     }
 
     #region ClientConnectedEventArgs Subclass
