@@ -35,8 +35,8 @@ namespace Spin.Pillars.Logging
       var builder = new StringBuilder();
       bool hasMessage = false;
 
-      builder.Append(Time.ToString(@"hh\:mm\:ss\.fff"));
-      builder.Append(' ');
+      //builder.Append(Time.ToString(@"hh\:mm\:ss\.fff"));
+      //builder.Append(' ');
 
       if (message is null && Tags.Any(x => x.Text == "Status"))
         message = "{Scope:leaf} - {Status}";
@@ -68,8 +68,6 @@ namespace Spin.Pillars.Logging
 
       return builder.ToString();
     }
-
-
 
     //private void Interpolate(string message, StringBuilder builder, out List<string> observedTags)
     internal static string Interpolate(string message, IEnumerable<Tag> tags)
