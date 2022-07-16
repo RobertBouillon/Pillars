@@ -16,7 +16,7 @@ namespace Spin.Pillars.FileSystem.OS
       if (!OsFileSystem.Mounts.TryGetValue(root, out var fileSystem))
         throw new ArgumentException($"Unable to find an instance of the drive '{root}'");
 
-      return new OsFile(fileSystem, Path.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
+      return new OsFile(fileSystem, FilePath.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
     }
 
     public override OsFileSystem FileSystem => base.FileSystem as OsFileSystem;
@@ -38,7 +38,7 @@ namespace Spin.Pillars.FileSystem.OS
       stamp == TimeStamp.LastWrite ? kind == DateTimeKind.Utc ? FileInfo.LastWriteTimeUtc : FileInfo.LastWriteTime :
       throw new NotImplementedException(stamp.ToString());
 
-    public OsFile(OsFileSystem fileSystem, Path path) : base(fileSystem, path) { }
+    public OsFile(OsFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
 
     public override io.Stream OpenRead() => io.File.OpenRead(PathedName);
     public override io.Stream OpenWrite() => io.File.OpenWrite(PathedName);

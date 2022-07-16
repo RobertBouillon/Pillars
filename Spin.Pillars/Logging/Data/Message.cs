@@ -8,6 +8,9 @@ namespace Spin.Pillars.Logging.Data
 {
   public struct Message
   {
+    private static StringBuilder _interpolationBuffer = new StringBuilder(1024 * 16);
+    public record EmbeddedTag(int Start, int Length, string Name, string Format);
+
     public string Text { get; set; }
     public Message(string text) => Text = text;
     public override string ToString() => Text;

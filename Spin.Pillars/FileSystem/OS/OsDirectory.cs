@@ -21,7 +21,7 @@ namespace Spin.Pillars.FileSystem.OS
       if (!OsFileSystem.Mounts.TryGetValue(root.ToUpper(), out var fileSystem))
         throw new ArgumentException($"Unable to find an instance of the drive '{root}'");
 
-      return new OsDirectory(fileSystem, Path.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
+      return new OsDirectory(fileSystem, FilePath.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
     }
 
     public Observer Observe(ChangeTypes types, string filter = null)
@@ -31,6 +31,6 @@ namespace Spin.Pillars.FileSystem.OS
 
     public override OsFileSystem FileSystem => base.FileSystem as OsFileSystem;
     public override OsDirectory ParentDirectory => Path.Count == 0 ? null : new OsDirectory(FileSystem, Path.MoveUp());
-    public OsDirectory(OsFileSystem fileSystem, Path path) : base(fileSystem, path) { }
+    public OsDirectory(OsFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
   }
 }

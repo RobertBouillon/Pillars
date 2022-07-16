@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using io = System.IO;
 
 namespace Spin.Pillars.FileSystem.InMemory
@@ -21,10 +19,10 @@ namespace Spin.Pillars.FileSystem.InMemory
     public InMemoryFileSystem() => _root = new MemoryDirectory(PathSeparator.ToString());
     public InMemoryFileSystem(char pathSeparator) : this() => _pathSeparator = pathSeparator;
 
-    public override Directory GetDirectory(Path path) => new InMemoryDirectory(this, path);
-    public override File GetFile(Path path) => new InMemoryFile(this, path);
+    public override Directory GetDirectory(FilePath path) => new InMemoryDirectory(this, path);
+    public override File GetFile(FilePath path) => new InMemoryFile(this, path);
 
-    internal MemoryFile FindFile(Path path)
+    internal MemoryFile FindFile(FilePath path)
     {
       var dir = _root;
       foreach (var item in path.Branches)
@@ -37,9 +35,9 @@ namespace Spin.Pillars.FileSystem.InMemory
       return file;
     }
 
-    internal bool TryFindFile(Path path, out MemoryFile file) => (file = FindFile(path)) is not null;
+    internal bool TryFindFile(FilePath path, out MemoryFile file) => (file = FindFile(path)) is not null;
 
-    internal MemoryDirectory FindDirectory(Path path)
+    internal MemoryDirectory FindDirectory(FilePath path)
     {
       var dir = _root;
       foreach (var item in path.Nodes)
@@ -51,7 +49,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       return dir;
     }
 
-    internal bool TryFindDirectory(Path path, out MemoryDirectory dir)
+    internal bool TryFindDirectory(FilePath path, out MemoryDirectory dir)
     {
       dir = _root;
       foreach (var item in path.Nodes)
@@ -61,9 +59,9 @@ namespace Spin.Pillars.FileSystem.InMemory
       return true;
     }
 
-    public override bool FileExists(Path path) => TryFindFile(path, out var _);
-    public override bool DirectoryExists(Path path) => TryFindDirectory(path, out var _);
-    public override void DeleteFile(Path path)
+    public override bool FileExists(FilePath path) => TryFindFile(path, out var _);
+    public override bool DirectoryExists(FilePath path) => TryFindDirectory(path, out var _);
+    public override void DeleteFile(FilePath path)
     {
       var file = FindFile(path);
       if (file is null)
@@ -71,7 +69,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       file.Directory.Files.Remove(file.Name);
     }
 
-    public override void DeleteDirectory(Path path)
+    public override void DeleteDirectory(FilePath path)
     {
       var dir = FindDirectory(path);
 
@@ -81,7 +79,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       dir.Parent.Directories.Remove(dir.Name);
     }
 
-    public override void CreateFile(Path path)
+    public override void CreateFile(FilePath path)
     {
       var name = path.Leaf;
       var parent = FindParentDirectory(path);
@@ -90,7 +88,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       parent.CreateFile(name);
     }
 
-    public override void CreateDirectory(Path path)
+    public override void CreateDirectory(FilePath path)
     {
       if (!path.Nodes.Any())
         throw new Exception("Cannot create root directory");
@@ -105,7 +103,7 @@ namespace Spin.Pillars.FileSystem.InMemory
           sub.Directories.Add(item, sub = new(sub, item));
     }
 
-    private MemoryDirectory FindParentDirectory(Path path)
+    private MemoryDirectory FindParentDirectory(FilePath path)
     {
       var dir = _root;
       if (path.Nodes.Length > 1)
@@ -117,7 +115,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       return dir;
     }
 
-    public override IEnumerable<Path> GetFiles(Path directory) => FindDirectory(directory).Files.Select(x => x.Value.Path);
-    public override IEnumerable<Path> GetDirectories(Path directory) => FindDirectory(directory).Directories.Select(x => x.Value.Path);
+    public override IEnumerable<FilePath> GetFiles(FilePath directory) => FindDirectory(directory).Files.Select(x => x.Value.Path);
+    public override IEnumerable<FilePath> GetDirectories(FilePath directory) => FindDirectory(directory).Directories.Select(x => x.Value.Path);
   }
 }

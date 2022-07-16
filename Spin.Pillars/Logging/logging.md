@@ -120,7 +120,7 @@ Sync Host
 "SOMETHING finished"
 "SOMETHING failed"
 
-## Persistent State Changes
+## Persistent State Changed
 "SOMETHING Status: Offline"
 "SOMETHING Status: Online"
 

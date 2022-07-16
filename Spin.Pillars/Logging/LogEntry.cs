@@ -21,13 +21,15 @@ namespace Spin.Pillars.Logging
     public IEnumerable<Tag> Tags => Data.OfType<Tag>();
     public IEnumerable<Label> Labels => Data.OfType<Label>();
     public Message Message => Data.OfType<Message>().SingleOrDefault();
+    public bool HasMessage => Data.OfType<Message>().Any();
+    public bool HasScope => Data.OfType<Tag>().Any(x=>x.Text == "Scope");
 
     public LogEntry(DateTime time, Path scope, IEnumerable<object> data) => (Time, Scope, Data) = (time, scope, data.ToList());
     //public LogEntry Error(params object[] data) => throw new NotImplementedException();
     //public LogEntry Close(params object[] data) => throw new NotImplementedException();
 
-
     //public override string ToString() => Time.ToString(@"hh\:mm\:ss\.fff") + ' ' + base.ToString();
+<<<<<<< Updated upstream
 
     public override string ToString()
     {
@@ -35,8 +37,8 @@ namespace Spin.Pillars.Logging
       var builder = new StringBuilder();
       bool hasMessage = false;
 
-      //builder.Append(Time.ToString(@"hh\:mm\:ss\.fff"));
-      //builder.Append(' ');
+      builder.Append(Time.ToString(@"hh\:mm\:ss\.fff"));
+      builder.Append(' ');
 
       if (message is null && Tags.Any(x => x.Text == "Status"))
         message = "{Scope:leaf} - {Status}";
@@ -68,6 +70,8 @@ namespace Spin.Pillars.Logging
 
       return builder.ToString();
     }
+
+
 
     //private void Interpolate(string message, StringBuilder builder, out List<string> observedTags)
     internal static string Interpolate(string message, IEnumerable<Tag> tags)
@@ -135,5 +139,7 @@ namespace Spin.Pillars.Logging
       if (index < message.Length)
         builder.Append(message, index, message.Length - index);
     }
+=======
+>>>>>>> Stashed changes
   }
 }

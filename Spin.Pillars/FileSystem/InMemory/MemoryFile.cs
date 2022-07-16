@@ -59,7 +59,7 @@ namespace Spin.Pillars.FileSystem.InMemory
     public DateTime LastAccessTime { get; set; }
     public DateTime LastWriteTime { get; set; }
     public DateTime CreationTime { get; set; }
-    public Hierarchy.Path Path => new(Directory.Traverse(x => x.Parent).Where(x => x.Parent is not null).Reverse().Select(x => x.Name).Concat(Name).ToArray());
+    public FilePath Path => new(Directory.Traverse(x => x.Parent).Where(x => x.Parent is not null).Reverse().Select(x => x.Name).Concat(Name).ToArray());
 
     public MemoryFile(MemoryDirectory directory, string name)
     {

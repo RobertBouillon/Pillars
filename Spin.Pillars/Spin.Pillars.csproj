@@ -37,11 +37,9 @@
 
   <ItemGroup>
     <Compile Remove="FileSystem\DirectoryPath.cs" />
-    <Compile Remove="FileSystem\FilePath.cs" />
     <Compile Remove="FileSystem\FileSystemPath.cs" />
     <Compile Remove="FileSystem\OS\MountProvider.cs" />
     <Compile Remove="LogBuffer.cs" />
-    <Compile Remove="Logging\Data\Scope.cs" />
     <Compile Remove="Logging\Data\State.cs" />
     <Compile Remove="Logging\LogController.cs" />
     <Compile Remove="Logging\Logs.cs" />

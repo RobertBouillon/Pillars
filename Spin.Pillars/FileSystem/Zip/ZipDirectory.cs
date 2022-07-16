@@ -13,6 +13,6 @@ namespace Spin.Pillars.FileSystem.Zip
     public override ZipDirectory ParentDirectory => Path.Count == 0 ? null : new ZipDirectory(FileSystem, Path.MoveUp());
 
     internal ZipDirectory(ZipFileSystem fileSystem, ZipDirectory directory) : base(fileSystem, directory.Path) { }
-    public ZipDirectory(ZipFileSystem fileSystem, Path path) : base(fileSystem, path) { }
+    public ZipDirectory(ZipFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
   }
 }

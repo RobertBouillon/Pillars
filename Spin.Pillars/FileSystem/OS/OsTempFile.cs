@@ -17,15 +17,12 @@ namespace Spin.Pillars.FileSystem.OS
       if (!OsFileSystem.Mounts.TryGetValue(root, out var fileSystem))
         throw new ArgumentException($"Unable to find an instance of the drive '{root}'");
 
-      return new OsTempFile(fileSystem, Path.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
+      return new OsTempFile(fileSystem, FilePath.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
     }
 
     ~OsTempFile() => Dispose(false);
 
-    private OsTempFile(OsFileSystem fileSystem, Path path) : base(fileSystem, path) { }
-    protected override void DisposeNative()
-    {
-      Delete();
-    }
+    private OsTempFile(OsFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    protected override void DisposeNative() => Delete();
   }
 }

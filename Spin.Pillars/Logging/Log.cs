@@ -19,12 +19,18 @@ namespace Spin.Pillars.Logging
     public static string StartingOperationStatus => "Started";
     public static string FinishedOperationStatus => "Finished";
 
-    public static Action<LogEntry> WriteHandler { get; } = x => Console.WriteLine(x.ToString().Replace("\n", "\n             "));
-    public static void Write(LogEntry entry) => WriteHandler(entry);
+    public static Action<LogEntry> Writer { get; set; }
+    public static void Write(LogEntry entry) => Writer(entry);
     private static LogEntry WriteBack(LogEntry entry)
     {
       Write(entry);
       return entry;
+    }
+
+    static Log()
+    {
+      var reader = new ConsoleReader();
+      Writer = x => reader.Read(x);
     }
 
     public static LogEntry Write(params object[] data) => WriteBack(new LogEntry(Clock.Time, Path.Empty, data));
