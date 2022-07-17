@@ -1,15 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Spin.Pillars.Workers;
-using System.Net.Sockets;
-using System.Threading;
+﻿using System.Net.Sockets;
 
-namespace Spin.Pillars_Tests
+namespace Spin.Pillars.Workers
 {
-  [TestClass]
-  public class Workers
+  partial class TcpConnectionWorker
   {
-    [TestMethod]
-    public void TestTcpWorker()
+    public static void TestTcpWorker()
     {
       var ep = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 5050);
       var worker = new TcpConnectionWorker(ep);

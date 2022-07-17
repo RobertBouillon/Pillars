@@ -1,11 +1,7 @@
 ﻿using Spin.Pillars.Hierarchy;
 using System;
-using System.Collections.Generic;
 using io = System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Spin.Pillars.FileSystem.Zip
 {
@@ -34,7 +30,7 @@ namespace Spin.Pillars.FileSystem.Zip
       throw new NotImplementedException(stamp.ToString());
 
     internal ZipFile(ZipFileSystem fileSystem, ZipFile file) : base(fileSystem, file.Path) { }
-    public ZipFile(ZipFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    public ZipFile(ZipFileSystem fileSystem, Path path) : base(fileSystem, path) { }
 
     public override io.Stream OpenRead() => IsReadOnly ? ZipEntry.Open() : throw new Exception("Archive is write-only");
     public override io.Stream OpenWrite() => !IsReadOnly ? ZipEntry.Open() : throw new Exception("Archive is read-only");

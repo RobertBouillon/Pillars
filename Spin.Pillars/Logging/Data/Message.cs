@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Spin.Pillars.Logging.Data
 {
-  public struct Message
+  public partial struct Message
   {
     private static StringBuilder _interpolationBuffer = new StringBuilder(1024 * 16);
     public record EmbeddedTag(int Start, int Length, string Name, string Format);

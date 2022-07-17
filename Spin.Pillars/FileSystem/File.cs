@@ -12,7 +12,7 @@ namespace Spin.Pillars.FileSystem
   public abstract class File : Disposable, IEntity
   {
     public virtual FileSystem FileSystem { get; }
-    public FilePath Path { get; }
+    public Path Path { get; }
 
     public virtual Directory ParentDirectory => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());
     public virtual string Name => Path.Leaf;
@@ -20,7 +20,7 @@ namespace Spin.Pillars.FileSystem
     public virtual string NameLessExtension => Name.Contains(".") ? Name.Substring(0, Name.LastIndexOf('.')) : Name;
     public string PathedName => FileSystem.GetPathedName(Path);
 
-    public File(FileSystem fileSystem, FilePath path)
+    public File(FileSystem fileSystem, Path path)
     {
       #region Validation
       if (fileSystem is null)

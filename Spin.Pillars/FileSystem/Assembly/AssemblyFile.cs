@@ -22,7 +22,7 @@ namespace Spin.Pillars.FileSystem.Assembly
     public override DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind) => throw new NotSupportedException(stamp.ToString());
 
     public AssemblyFile(AssemblyFileSystem fileSystem, string path) : this(fileSystem, fileSystem.ParsePath(path)) { }
-    public AssemblyFile(AssemblyFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    public AssemblyFile(AssemblyFileSystem fileSystem, Path path) : base(fileSystem, path) { }
 
     public override io.Stream OpenRead() => FileSystem.Assembly.GetManifestResourceStream(PathedName);
     public override io.Stream OpenWrite() => throw new NotSupportedException();

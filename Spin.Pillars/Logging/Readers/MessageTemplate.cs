@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Spin.Pillars.Logging.Readers
 {
-  public class MessageTemplate
+  public partial class MessageTemplate
   {
     struct Part
     {

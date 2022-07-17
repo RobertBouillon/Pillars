@@ -9,10 +9,10 @@ namespace Spin.Pillars.FileSystem
   public abstract class Directory : IBranch, IEntity
   {
     public virtual FileSystem FileSystem { get; }
-    public FilePath Path { get; }
+    public Path Path { get; }
 
     public Directory() { }
-    public Directory(FileSystem fileSystem, FilePath path)
+    public Directory(FileSystem fileSystem, Path path)
     {
       #region Validation
       if (fileSystem is null)

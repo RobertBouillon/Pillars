@@ -30,7 +30,7 @@ namespace Spin.Pillars.FileSystem.InMemory
         throw new NotImplementedException(stamp.ToString());
 
     internal InMemoryFile(InMemoryFileSystem fileSystem, MemoryFile file) : base(fileSystem, file.Path) { }
-    public InMemoryFile(InMemoryFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    public InMemoryFile(InMemoryFileSystem fileSystem, Path path) : base(fileSystem, path) { }
 
     //public override io.Stream Open(io.FileAccess access)
     //{

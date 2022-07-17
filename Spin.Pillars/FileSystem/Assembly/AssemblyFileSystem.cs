@@ -25,27 +25,27 @@ namespace Spin.Pillars.FileSystem.Assembly
 
     public AssemblyFileSystem(System.Reflection.Assembly assembly) : base(assembly.FullName) => Assembly = assembly;
 
-    public override Directory GetDirectory(FilePath path) => new AssemblyDirectory(this, path);
-    public override File GetFile(FilePath path) => new AssemblyFile(this, path);
+    public override Directory GetDirectory(Path path) => new AssemblyDirectory(this, path);
+    public override File GetFile(Path path) => new AssemblyFile(this, path);
 
-    public override bool FileExists(FilePath path) => FileIndex.Contains(path.ToString(PathSeparator));
-    public override bool DirectoryExists(FilePath path) => DirectoryIndex.Contains(path.ToString(PathSeparator));
+    public override bool FileExists(Path path) => FileIndex.Contains(path.ToString(PathSeparator));
+    public override bool DirectoryExists(Path path) => DirectoryIndex.Contains(path.ToString(PathSeparator));
 
-    public override void DeleteFile(FilePath path) => throw new NotSupportedException();
-    public override void DeleteDirectory(FilePath path) => throw new NotSupportedException();
-    public override void CreateFile(FilePath path) => throw new NotSupportedException();
-    public override void CreateDirectory(FilePath path) => throw new NotSupportedException();
+    public override void DeleteFile(Path path) => throw new NotSupportedException();
+    public override void DeleteDirectory(Path path) => throw new NotSupportedException();
+    public override void CreateFile(Path path) => throw new NotSupportedException();
+    public override void CreateDirectory(Path path) => throw new NotSupportedException();
 
-    public override IEnumerable<FilePath> GetFiles(FilePath directory)
+    public override IEnumerable<Path> GetFiles(Path directory)
     {
       var dir = directory.ToString(PathSeparator) + PathSeparator;
-      return _files.Where(x=>x.StartsWith(dir)).Select(x => FilePath.Parse(x, PathSeparator));
+      return _files.Where(x=>x.StartsWith(dir)).Select(x => Path.Parse(x, PathSeparator));
     }
 
-    public override IEnumerable<FilePath> GetDirectories(FilePath directory)
+    public override IEnumerable<Path> GetDirectories(Path directory)
     {
       var dir = directory.ToString(PathSeparator) + PathSeparator;
-      return _directories.Where(x => x.StartsWith(dir)).Select(x => FilePath.Parse(x, PathSeparator));
+      return _directories.Where(x => x.StartsWith(dir)).Select(x => Path.Parse(x, PathSeparator));
     }
   }
 }

@@ -24,6 +24,6 @@ namespace Spin.Pillars.FileSystem.InMemory
     }
 
     internal InMemoryDirectory(InMemoryFileSystem fileSystem, MemoryDirectory directory) : base(fileSystem, directory.Path) => _memoryDirectory = directory;
-    public InMemoryDirectory(InMemoryFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    public InMemoryDirectory(InMemoryFileSystem fileSystem, Path path) : base(fileSystem, path) { }
   }
 }

@@ -53,67 +53,47 @@ namespace Spin.Pillars.FileSystem
         throw new ArgumentNullException(nameof(name));
       #endregion
       Name = name;
-      Root = GetDirectory(new FilePath(Path.Empty, true, false));
+      Root = GetDirectory(Path.Root);
     }
 
-    public virtual Directory GetDirectory(string path)
-    {
-      var filepath = ParsePath(path);
-      filepath.IsLeafDirectory = true;
-      return GetDirectory(path);
-    }
-
-    public abstract Directory GetDirectory(FilePath path);
+    public virtual Directory GetDirectory(string path) => GetDirectory(new Path(ParsePath(path), isTerminated: true));
+    public abstract Directory GetDirectory(Path path);
     public virtual File GetFile(string path) => GetFile(ParsePath(path));
-    public abstract File GetFile(FilePath path);
-    public virtual FilePath ParsePath(string path) => FilePath.Parse(path, PathSeparator);
-    public virtual FilePath ParsePath(string path, FilePath context) => FilePath.IsPathRooted(path, PathSeparator) ? ParsePath(path) : context.Append(ParsePath(path));
+    public abstract File GetFile(Path path);
+    public virtual Path ParsePath(string path) => Path.Parse(path, PathSeparator);
+    public virtual Path ParsePath(string path, Path context) => context.Append(ParsePath(path));
     public abstract IEnumerable<TimeStamp> SupportedDateStamps { get; }
 
-    public abstract bool FileExists(FilePath path);
-    public abstract bool DirectoryExists(FilePath path);
-    public abstract void DeleteFile(FilePath path);
-    public abstract void DeleteDirectory(FilePath path);
-    public abstract void CreateFile(FilePath path);
-    public abstract void CreateDirectory(FilePath path);
-    public virtual void RenameFile(FilePath path, string name)
+    public abstract bool FileExists(Path path);
+    public abstract bool DirectoryExists(Path path);
+    public abstract void DeleteFile(Path path);
+    public abstract void DeleteDirectory(Path path);
+    public abstract void CreateFile(Path path);
+    public abstract void CreateDirectory(Path path);
+    public virtual void RenameFile(Path path, string name)
     {
       var source = GetFile(path);
       source.MoveTo(source.ParentDirectory.GetFile(name));
     }
 
-    public virtual bool FileExists(string path) => FileExists(FilePath.Parse(path, PathSeparator));
-    public virtual bool DirectoryExists(string path) => DirectoryExists(FilePath.Parse(path, PathSeparator));
-    public virtual void DeleteFile(string path) => DeleteFile(FilePath.Parse(path, PathSeparator));
-    public virtual void DeleteDirectory(string path, bool recurse = false) => DeleteDirectory(FilePath.Parse(path, PathSeparator));
-    public virtual void CreateFile(string path) => CreateFile(FilePath.Parse(path, PathSeparator));
-    public virtual void CreateDirectory(string path) => CreateDirectory(FilePath.Parse(path, PathSeparator));
+    public virtual bool FileExists(string path) => FileExists(Path.Parse(path, PathSeparator));
+    public virtual bool DirectoryExists(string path) => DirectoryExists(Path.Parse(path, PathSeparator));
+    public virtual void DeleteFile(string path) => DeleteFile(Path.Parse(path, PathSeparator));
+    public virtual void DeleteDirectory(string path, bool recurse = false) => DeleteDirectory(Path.Parse(path, PathSeparator));
+    public virtual void CreateFile(string path) => CreateFile(Path.Parse(path, PathSeparator));
+    public virtual void CreateDirectory(string path) => CreateDirectory(Path.Parse(path, PathSeparator));
 
-    public virtual Task<IEnumerable<FilePath>> GetFilesAsync(FilePath directory) => Task.FromResult(GetFiles(directory));
-    public virtual Task<IEnumerable<FilePath>> GetDirectoriesAsync(FilePath directory) => Task.FromResult(GetDirectories(directory));
-    public abstract IEnumerable<FilePath> GetFiles(FilePath directory);
-    public abstract IEnumerable<FilePath> GetDirectories(FilePath directory);
+    public virtual Task<IEnumerable<Path>> GetFilesAsync(Path directory) => Task.FromResult(GetFiles(directory));
+    public virtual Task<IEnumerable<Path>> GetDirectoriesAsync(Path directory) => Task.FromResult(GetDirectories(directory));
+    public abstract IEnumerable<Path> GetFiles(Path directory);
+    public abstract IEnumerable<Path> GetDirectories(Path directory);
 
-    public virtual string GetPathedName(FilePath path) => path.ToString(PathSeparator);
-    public virtual Path ParseAbsolutePath(string path)
-    {
-      #region Validation
-      if (String.IsNullOrWhiteSpace(path))
-        throw new ArgumentNullException(nameof(path));
-      #endregion
-      if (path.StartsWith(Name))
-        return FilePath.Parse(path.Substring(path.Length), PathSeparator);
-      if (path.StartsWith(PathSeparator.ToString()))
-        return FilePath.Parse(path.Substring(1), PathSeparator);
-      return FilePath.Parse(path, PathSeparator);
-    }
+    public virtual string GetPathedName(Path path) => path.ToString(PathSeparator);
 
     public virtual IEntity this[string path] => this[ParsePath(path)];
-    public virtual IEntity this[FilePath path] =>
-      path.IsLeafDirectory == true ? GetFile(path) :
-      path.IsLeafDirectory == false ? GetDirectory(path) :
+    public virtual IEntity this[Path path] =>
+      path.IsTerminated == true ? GetFile(path) :
+      path.IsTerminated == false ? GetDirectory(path) :
       (IEntity)GetFile(path) ?? GetDirectory(path);
-
-    public virtual IEntity this[Path path] => this[new FilePath(path)];
   }
 }

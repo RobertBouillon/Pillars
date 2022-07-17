@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using io = System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Spin.Pillars.Hierarchy;
-using System.Reflection;
 
 namespace Spin.Pillars.FileSystem.Assembly
 {
@@ -14,7 +9,7 @@ namespace Spin.Pillars.FileSystem.Assembly
 
     public override AssemblyDirectory ParentDirectory => Path.Count == 0 ? null : new AssemblyDirectory(FileSystem, Path.MoveUp());
 
-    public AssemblyDirectory(AssemblyFileSystem fileSystem, string path) : this(fileSystem, FilePath.Parse(path, fileSystem.PathSeparator)) { }
-    public AssemblyDirectory(AssemblyFileSystem fileSystem, FilePath path) : base(fileSystem, path) { }
+    public AssemblyDirectory(AssemblyFileSystem fileSystem, string path) : this(fileSystem, Path.Parse(path, fileSystem.PathSeparator)) { }
+    public AssemblyDirectory(AssemblyFileSystem fileSystem, Path path) : base(fileSystem, path) { }
   }
 }

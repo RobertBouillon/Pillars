@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Spin.Pillars.Workers
 {
-  public class TcpConnectionWorker
+  public partial class TcpConnectionWorker
   {
     private TcpListener _tcpListener;
 
