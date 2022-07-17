@@ -1,6 +1,7 @@
 ﻿using Spin.Pillars.FileSystem.OS;
 using System;
 using System.Linq;
+using static System.Diagnostics.Debug;
 
 namespace Spin.Pillars.Hierarchy
 {
@@ -54,6 +55,22 @@ namespace Spin.Pillars.Hierarchy
       );
     }
 
+    public static void TestSimplify()
+    {
+      AssertSimplify(@"\Foo\..", @"\");
+      AssertSimplify(@"\Foo\.", @"\Foo\");
+      AssertSimplify(@"\Foo\Bar\..\Foo\..\.", @"\Foo\");
+      AssertSimplify(@"\Foo\Bar\..\Foo\.", @"\Foo\Foo\");
+      AssertSimplify(@"\Foo\Bar\..\Foo\.", @"\Foo\Foo\");
+      AssertSimplify(@"C:\Users\Robert\Code\..\Tests\Assets", @"C:\Users\Robert\Tests\Assets");
+    }
+
+    private static void AssertSimplify(string actual, string simplified)
+    {
+      var parsed = WindowsFilePath.Parse(actual, '\\').Simplify().ToString();
+      Assert(parsed == simplified);
+    }
+
     private static void AssertPathOrder(params string[] nodes)
     {
       var paths = nodes.Select(x => WindowsFilePath.Parse(x)).ToList();
@@ -85,12 +102,6 @@ namespace Spin.Pillars.Hierarchy
       Assert(isRoot == filepath.IsRooted);
       Assert(isDir == filepath.IsTerminated);
       Assert(drive == filepath.DriveLetter);
-    }
-
-    private static void Assert(bool condition)
-    {
-      if (!condition)
-        throw new Exception();
     }
   }
 }

@@ -45,7 +45,7 @@ namespace Spin.Pillars.FileSystem
     public virtual Directory Root { get; }
     public virtual bool IsReadOnly => false;
 
-    public FileSystem() { }
+    public FileSystem() => Root = GetDirectory(Path.Root);
     protected FileSystem(string name)
     {
       #region Validation
@@ -53,7 +53,6 @@ namespace Spin.Pillars.FileSystem
         throw new ArgumentNullException(nameof(name));
       #endregion
       Name = name;
-      Root = GetDirectory(Path.Root);
     }
 
     public virtual Directory GetDirectory(string path) => GetDirectory(new Path(ParsePath(path), isTerminated: true));

@@ -42,6 +42,8 @@ namespace Spin.Pillars.FileSystem.OS
       return base.CompareTo(other);
     }
 
+    public override Path Simplify() => new WindowsFilePath(base.Simplify(), DriveLetter);
+
     public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), IsRooted, IsTerminated);
 
     public override bool Equals(object obj) => Equals(obj as WindowsFilePath);

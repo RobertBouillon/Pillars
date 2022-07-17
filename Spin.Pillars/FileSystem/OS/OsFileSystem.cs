@@ -17,8 +17,7 @@ namespace Spin.Pillars.FileSystem.OS
     public override TimeStamp[] SupportedDateStamps => _supportedDateStamps;
 
     static OsFileSystem() { }
-
-    public override string GetPathedName(Path path) => io.Path.Combine(EnumerableEx.Single(Name).Concat(path.Nodes).ToArray());
+    public OsFileSystem() : base(Environment.OSVersion.Platform.ToString()) { }
 
     public override Directory GetDirectory(Path path) => new OsDirectory(this, path);
     public override File GetFile(Path path) => new OsFile(this, path);
@@ -34,8 +33,7 @@ namespace Spin.Pillars.FileSystem.OS
 
     public override Path ParsePath(string path) => WindowsFilePath.Parse(path);
 
-    public override IEnumerable<Path> GetFiles(Path directory) => io.Directory.GetFiles(GetPathedName(directory)).Select(x => Path.Parse(x.Substring(3), PathSeparator));
-    public override IEnumerable<Path> GetDirectories(Path directory) => io.Directory.GetDirectories(GetPathedName(directory)).Select(x => Path.Parse(x.Substring(3), PathSeparator));
-
+    public override IEnumerable<Path> GetFiles(Path directory) => io.Directory.GetFiles(GetPathedName(directory)).Select(x => WindowsFilePath.Parse(x));
+    public override IEnumerable<Path> GetDirectories(Path directory) => io.Directory.GetDirectories(GetPathedName(directory)).Select(x => WindowsFilePath.Parse(x));
   }
 }

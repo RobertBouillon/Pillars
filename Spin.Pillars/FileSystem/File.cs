@@ -27,7 +27,7 @@ namespace Spin.Pillars.FileSystem
         throw new ArgumentNullException(nameof(fileSystem));
       #endregion
       FileSystem = fileSystem;
-      Path = path;
+      Path = path.Simplify();
     }
 
     public abstract io.Stream OpenRead();

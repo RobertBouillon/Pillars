@@ -7,7 +7,7 @@ namespace Spin.Pillars.Hierarchy
 {
   public partial class Path : IComparable<Path>, IFormattable
   {
-    public static new Path Parse(string path, char separator)
+    public static Path Parse(string path, char separator)
     {
       #region Validation
       if (path is null)
@@ -65,11 +65,11 @@ namespace Spin.Pillars.Hierarchy
     public virtual string Leaf => Nodes.Any() ? Nodes.Last() : null;
     public int Count => Nodes.Length;
 
-    public Path(params string[] nodes) => Nodes = nodes;
-    public Path(IEnumerable<string> nodes) : this(nodes.ToArray()) { }
-    public Path(ILeaf node) => Nodes = node.Traverse(x => x.Parent).Select(x => x.Name).Concat(node.Name).ToArray();
     public Path(IEnumerable<string> nodes, bool isRooted = false, bool isTerminated = false) : this(nodes) => (IsRooted, IsTerminated) = (isRooted, isTerminated);
     public Path(Path node, bool? isRooted = null, bool? isTerminated = null) : this(node.Nodes) => (IsRooted, IsTerminated) = (isRooted ?? node.IsRooted, isTerminated ?? node.IsTerminated);
+    public Path(IEnumerable<string> nodes) : this(nodes.ToArray()) { }
+    public Path(ILeaf node) => Nodes = node.Traverse(x => x.Parent).Select(x => x.Name).Concat(node.Name).ToArray();
+    public Path(params string[] nodes) => Nodes = nodes;
 
 
     public virtual Path MoveUp(int levels = 1)
@@ -90,8 +90,35 @@ namespace Spin.Pillars.Hierarchy
       return new Path(Nodes.Skip(path.Count).ToArray());
     }
 
-    public virtual Path Append(params string[] paths) => new Path(Nodes.Concat(paths).ToArray());
-    public virtual Path Append(Path path) => new Path(Nodes.Concat(path.Nodes).ToArray());
+    public virtual Path Simplify()
+    {
+      var q = new Stack<string>();
+      var e = ((IEnumerable<string>)Nodes).GetEnumerator();
+      bool? isTerminated = null;
+      while (e.MoveNext())
+      {
+        if (e.Current == ".")
+        {
+          isTerminated = true;
+          continue;
+        }
+        else if (e.Current == "..")
+        {
+          isTerminated = true;
+          q.Pop();
+        }
+        else
+        {
+          isTerminated = null;
+          q.Push(e.Current);
+        }
+      }
+
+      return new Path(q.Reverse(), IsRooted, isTerminated ?? IsTerminated);
+    }
+
+    public virtual Path Append(params string[] paths) => new Path((IEnumerable<String>)Nodes.Concat(paths), IsRooted, false);
+    public virtual Path Append(Path path) => new Path(Nodes.Concat(path.Nodes), IsRooted, path.IsTerminated);
 
     public void Intern(HashSet<string> dictionary)
     {
