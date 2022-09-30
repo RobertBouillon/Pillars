@@ -85,8 +85,11 @@ namespace Spin.Pillars.FileSystem.InMemory
       file.Directory.Files.Remove(file.Name);
     }
 
-    public override void DeleteDirectory(Path path)
+    public override void DeleteDirectory(Path path, bool recurse = false)
     {
+      if (recurse)
+        throw new NotImplementedException();
+
       var dir = FindDirectory(path);
 
       if (dir.Parent is null)

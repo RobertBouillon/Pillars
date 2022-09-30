@@ -32,7 +32,7 @@ namespace Spin.Pillars.FileSystem.Assembly
     public override bool DirectoryExists(Path path) => DirectoryIndex.Contains(path.ToString(PathSeparator));
 
     public override void DeleteFile(Path path) => throw new NotSupportedException();
-    public override void DeleteDirectory(Path path) => throw new NotSupportedException();
+    public override void DeleteDirectory(Path path, bool recurse = false) => throw new NotSupportedException();
     public override void CreateFile(Path path) => throw new NotSupportedException();
     public override void CreateDirectory(Path path) => throw new NotSupportedException();
 

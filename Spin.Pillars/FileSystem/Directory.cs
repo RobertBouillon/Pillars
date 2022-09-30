@@ -65,8 +65,9 @@ namespace Spin.Pillars.FileSystem
           directory.CopyTo(destination.Create(directory.Name), overwrite, true);
     }
 
-    public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }
-    public virtual Task<bool> ExistsAsync() => Task.FromResult(Exists());
+    public virtual Task<bool> ExistsAsync() => FileSystem.DirectoryExistsAsync(Path);
+    public virtual Task CreateAsync() => FileSystem.CreateDirectoryAsync(Path);
+    public virtual Task DeleteAsync() => FileSystem.DeleteDirectoryAsync(Path);
 
     public virtual bool Exists() => FileSystem.DirectoryExists(Path);
     public virtual void Create() => FileSystem.CreateDirectory(Path);
@@ -89,6 +90,7 @@ namespace Spin.Pillars.FileSystem
       return sub;
     }
 
+    public virtual Task<bool> ContainsFileAsync(string name) => FileSystem.FileExistsAsync(Path.Append(name));
     public virtual bool ContainsFile(string name) => FileSystem.FileExists(Path.Append(name));
     public virtual bool ContainsDirectory(string name) => FileSystem.DirectoryExists(Path.Append(name));
 

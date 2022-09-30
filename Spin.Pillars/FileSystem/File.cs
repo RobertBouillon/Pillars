@@ -43,6 +43,10 @@ namespace Spin.Pillars.FileSystem
     public abstract DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind = DateTimeKind.Utc);
     public abstract void SetDate(TimeStamp stamp, DateTime date, DateTimeKind kind = DateTimeKind.Utc);
 
+    public virtual Task CreateAsync() => FileSystem.CreateFileAsync(Path);
+    public virtual Task<bool> ExistsAsync() => FileSystem.FileExistsAsync(Path);
+    public virtual Task DeleteAsync() => FileSystem.DeleteFileAsync(Path);
+
     public virtual void Create() => FileSystem.CreateFile(Path);
     public virtual bool Exists() => FileSystem.FileExists(Path);
     public virtual void Delete() => FileSystem.DeleteFile(Path);
@@ -108,8 +112,6 @@ namespace Spin.Pillars.FileSystem
 
     #region Async
 
-    public virtual Task DeleteAsync() { Delete(); return Task.CompletedTask; }
-    public virtual Task<bool> ExistsAsync() => Task.FromResult(Exists());
     public virtual Task<io.Stream> OpenReadAsync() => Task.FromResult(OpenRead());
     public virtual Task<io.Stream> OpenWriteAsync() => Task.FromResult(OpenWrite());
     public virtual async Task CopyToAsync(Directory directory) => await CopyToAsync(directory.GetFile(Name));
@@ -124,7 +126,7 @@ namespace Spin.Pillars.FileSystem
       await source.CopyToAsync(dest);
     }
 
-    public virtual Task<byte[]> ReadAllBytesAsync(Encoding encoding = null) => Task.FromResult(ReadAllBytes());
+    public virtual Task<byte[]> ReadAllBytesAsync() => Task.FromResult(ReadAllBytes());
     public virtual Task<string> ReadAllTextAsync(Encoding encoding = null) => Task.FromResult(ReadAllText());
     public virtual Task<string[]> ReadAllLinesAsync(Encoding encoding = null) => Task.FromResult(ReadAllLines());
     public virtual Task WriteAsync(string text, bool overwrite = true, Encoding encoding = null) { Write(text, overwrite, encoding); return Task.CompletedTask; }

@@ -31,8 +31,11 @@ namespace Spin.Pillars.FileSystem.Zip
 
     public override void DeleteFile(string path) => FindFile(path).Delete();
     public override void DeleteFile(Path path) => DeleteFile(GetPathedName(path));
-    public override void DeleteDirectory(Path path)
+    public override void DeleteDirectory(Path path, bool recurse = false)
     {
+      if (recurse)
+        throw new NotImplementedException();
+
       var dir = GetPathedName(path) + PathSeparator;
       foreach (var file in _file.Entries.Where(x => x.FullName.StartsWith(dir)))
         file.Delete();

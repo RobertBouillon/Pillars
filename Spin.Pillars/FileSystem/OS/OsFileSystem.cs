@@ -29,7 +29,7 @@ namespace Spin.Pillars.FileSystem.OS
     public override bool DirectoryExists(Path path) => io.Directory.Exists(GetPathedName(path));
 
     public override void DeleteFile(Path path) => io.File.Delete(GetPathedName(path));
-    public override void DeleteDirectory(Path path) => io.Directory.Delete(GetPathedName(path));
+    public override void DeleteDirectory(Path path, bool recurse) => io.Directory.Delete(GetPathedName(path), recurse);
 
     public override void CreateFile(Path path) => io.File.Create(GetPathedName(path)).Close();
     public override void CreateDirectory(Path path) => io.Directory.CreateDirectory(GetPathedName(path));

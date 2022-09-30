@@ -1,7 +1,6 @@
 ﻿using Spin.Pillars.Hierarchy;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using io = System.IO;
 
@@ -65,10 +64,24 @@ namespace Spin.Pillars.FileSystem
     public virtual Path ParsePath(string path, Path context) => Path.IsPathRooted(path, PathSeparator) ? ParsePath(path) : context.Append(ParsePath(path));
     public abstract IEnumerable<TimeStamp> SupportedDateStamps { get; }
 
+    public virtual Task<bool> FileExistsAsync(string path) => FileExistsAsync(ParsePath(path));
+    public virtual Task<bool> DirectoryExistsAsync(string path) => DirectoryExistsAsync(ParsePath(path));
+    public virtual Task DeleteFileAsync(string path) => DeleteFileAsync(ParsePath(path));
+    public virtual Task DeleteDirectoryAsync(string path, bool recurse = false) { DeleteDirectory(ParsePath(path), recurse); return Task.CompletedTask; }
+    public virtual Task CreateFileAsync(string path) { CreateFile(ParsePath(path)); return Task.CompletedTask; }
+    public virtual Task CreateDirectoryAsync(string path) { CreateDirectory(ParsePath(path)); return Task.CompletedTask; }
+
+    public virtual Task<bool> FileExistsAsync(Path path) => Task.FromResult(FileExists(path));
+    public virtual Task<bool> DirectoryExistsAsync(Path path) => Task.FromResult(DirectoryExists(path));
+    public virtual Task DeleteFileAsync(Path path) { DeleteFile(path); return Task.CompletedTask; }
+    public virtual Task DeleteDirectoryAsync(Path path) { DeleteDirectory(path); return Task.CompletedTask; }
+    public virtual Task CreateFileAsync(Path path) { CreateFile(path); return Task.CompletedTask; }
+    public virtual Task CreateDirectoryAsync(Path path) { CreateDirectory(path); return Task.CompletedTask; }
+
     public abstract bool FileExists(Path path);
     public abstract bool DirectoryExists(Path path);
     public abstract void DeleteFile(Path path);
-    public abstract void DeleteDirectory(Path path);
+    public abstract void DeleteDirectory(Path path, bool recurse = false);
     public abstract void CreateFile(Path path);
     public abstract void CreateDirectory(Path path);
     public virtual void RenameFile(Path path, string name)
@@ -77,12 +90,12 @@ namespace Spin.Pillars.FileSystem
       source.MoveTo(source.ParentDirectory.GetFile(name));
     }
 
-    public virtual bool FileExists(string path) => FileExists(Path.Parse(path, PathSeparator));
-    public virtual bool DirectoryExists(string path) => DirectoryExists(Path.Parse(path, PathSeparator));
-    public virtual void DeleteFile(string path) => DeleteFile(Path.Parse(path, PathSeparator));
-    public virtual void DeleteDirectory(string path, bool recurse = false) => DeleteDirectory(Path.Parse(path, PathSeparator));
-    public virtual void CreateFile(string path) => CreateFile(Path.Parse(path, PathSeparator));
-    public virtual void CreateDirectory(string path) => CreateDirectory(Path.Parse(path, PathSeparator));
+    public virtual bool FileExists(string path) => FileExists(ParsePath(path));
+    public virtual bool DirectoryExists(string path) => DirectoryExists(ParsePath(path));
+    public virtual void DeleteFile(string path) => DeleteFile(ParsePath(path));
+    public virtual void DeleteDirectory(string path, bool recurse = false) => DeleteDirectory(ParsePath(path));
+    public virtual void CreateFile(string path) => CreateFile(ParsePath(path));
+    public virtual void CreateDirectory(string path) => CreateDirectory(ParsePath(path));
 
     public virtual Task<IEnumerable<Path>> GetFilesAsync(Path directory) => Task.FromResult(GetFiles(directory));
     public virtual Task<IEnumerable<Path>> GetDirectoriesAsync(Path directory) => Task.FromResult(GetDirectories(directory));
