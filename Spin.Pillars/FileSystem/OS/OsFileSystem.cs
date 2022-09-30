@@ -8,19 +8,16 @@ namespace Spin.Pillars.FileSystem.OS
 {
   public class OsFileSystem : FileSystem
   {
+    public static TempFile CreateTempFile() => new TempFile(new OsFileSystem().GetFile(io.Path.GetTempFileName()));
+
     private static TimeStamp[] _supportedDateStamps = new TimeStamp[] { TimeStamp.Created, TimeStamp.LastAccess, TimeStamp.LastWrite };
 
     public override char PathSeparator => io.Path.DirectorySeparatorChar;
 
-    public static Dictionary<string, OsFileSystem> Mounts { get; }
     public override TimeStamp[] SupportedDateStamps => _supportedDateStamps;
 
-    static OsFileSystem() => Mounts = io.DriveInfo.GetDrives().Select(x => new OsFileSystem(x)).ToDictionary(x => x.Name);
-    public OsFileSystem(io.DriveInfo drive) : base(drive.Name) { }
-
-    public override string GetPathedName(Path path) => io.Path.Combine(EnumerableEx.Single(Name).Concat(path.Nodes).ToArray());
-    public override Path ParseAbsolutePath(string path) => new Path(path.Split(PathSeparator).Skip(1));
-    public override Path ParsePath(string path, out bool isRooted) => (isRooted = (path.Length >= 1 && path[0] == PathSeparator) || (path.Length >= 2 && path[1] == ':')) ? new Path(path.Split(PathSeparator).Skip(1)) : new Path(path.Split(PathSeparator));
+    static OsFileSystem() { }
+    public OsFileSystem() : base(Environment.OSVersion.Platform.ToString()) { }
 
     public override Directory GetDirectory(Path path) => new OsDirectory(this, path);
     public override File GetFile(Path path) => new OsFile(this, path);
@@ -34,7 +31,9 @@ namespace Spin.Pillars.FileSystem.OS
     public override void CreateFile(Path path) => io.File.Create(GetPathedName(path)).Close();
     public override void CreateDirectory(Path path) => io.Directory.CreateDirectory(GetPathedName(path));
 
-    public override IEnumerable<Path> GetFiles(Path directory) => io.Directory.GetFiles(GetPathedName(directory)).Select(x => Path.Parse(x.Substring(3), PathSeparator));
-    public override IEnumerable<Path> GetDirectories(Path directory) => io.Directory.GetDirectories(GetPathedName(directory)).Select(x => Path.Parse(x.Substring(3), PathSeparator));
+    public override Path ParsePath(string path) => WindowsFilePath.Parse(path);
+
+    public override IEnumerable<Path> GetFiles(Path directory) => io.Directory.GetFiles(GetPathedName(directory)).Select(x => WindowsFilePath.Parse(x));
+    public override IEnumerable<Path> GetDirectories(Path directory) => io.Directory.GetDirectories(GetPathedName(directory)).Select(x => WindowsFilePath.Parse(x));
   }
 }

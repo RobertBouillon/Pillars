@@ -1,123 +1,94 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿//using System;
+//using System.Collections;
+//using System.Collections.Concurrent;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading;
 
-namespace Spin.Pillars.Workers
-{
-  public abstract class QueueWorker<T> : EventWorker, IEnumerable<T>
-  {
-    #region Fields
-    private IProducerConsumerCollection<T> _queue;
-    private AutoResetEvent _handle = new AutoResetEvent(false);
-    private T _item;
-    #endregion
+//namespace Spin.Pillars.Workers
+//{
+//  public abstract class QueueWorker<T> : Worker, IEnumerable<T>
+//  {
+//    private ConcurrentQueue<T> _queue;
+//    private AutoResetEvent _workHandle = new AutoResetEvent(false);
+//    private T _item;
+//    protected bool HasWork => _queue.Count > 0;
 
-    #region Constructors
-    public QueueWorker() => _queue = new ConcurrentQueue<T>();
-    public QueueWorker(IProducerConsumerCollection<T> queue)
-    {
-      #region Validation
-      if (queue == null)
-        throw new ArgumentNullException(nameof(queue));
-      #endregion
-      _queue = queue;
-    }
-    public QueueWorker(string name) : this(name, new ConcurrentQueue<T>()){}
-    public QueueWorker(string name, IProducerConsumerCollection<T> queue) : base(name)
-    {
-      #region Validation
-      if (queue == null)
-        throw new ArgumentNullException(nameof(queue));
-      #endregion
-      _queue = queue;
-    }
+//    public QueueWorker(string name) : base(name)
+//    {
+//      #region Validation
+//      if (queue == null)
+//        throw new ArgumentNullException(nameof(queue));
+//      #endregion
+//      _queue = new ConcurrentQueue<T>();
+//    }
 
-    #endregion
+//    public virtual void Enqueue(T item)
+//    {
+//      _queue.Enqueue(item);
+//      _workHandle.Set();
+//    }
 
-    #region Methods
-    public virtual void Enqueue(T item)
-    {
-      // Just keep retrying
-      while (!_queue.TryAdd(item)) ;
-      _handle.Set();
-    }
-    #endregion
+//    public abstract void Work(T item);
 
-    #region Abstract Declarations
-    public abstract void Work(T item);
-    #endregion
+//    public void Flush()
+//    {
+//      while (_queue.Count > 0)
+//        Thread.Sleep(WaitDelay);
+//    }
 
-    #region Overrides
-    protected override bool HasWork => _queue.Count > 0;
-    protected override WaitHandle Handle => _handle;
+//    protected override void Work()
+//    {
+//      if (_queue.TryDequeue(out T item))
+//        Work(_item = item);
+//    }
 
-    public void Flush()
-    {
-      while (_queue.Count > 0)
-        Thread.Sleep(WaitDelay);
-    }
+//    #region Events
 
-    public override bool Stop(TimeSpan timeout, bool kill)
-    {
-      return base.Stop(timeout, kill);
-    }
+//    #region WorkPerformedEventArgs Subclass
+//    public class WorkPerformedEventArgs : EventArgs
+//    {
+//      #region Fields
+//      private readonly TimeSpan _duration;
+//      private readonly T _item;
+//      #endregion
+//      #region Properties
+//      public T Item
+//      {
+//        get { return _item; }
+//      }
 
-    protected override void Work()
-    {
-      if (_queue.TryTake(out T item))
-        Work(_item = item);
-    }
-    #endregion
+//      public TimeSpan Duration
+//      {
+//        get { return _duration; }
+//      }
+//      #endregion
+//      #region Constructors
+//      internal WorkPerformedEventArgs(TimeSpan duration, T item)
+//      {
+//        #region Validation
+//        if (duration == null)
+//          throw new ArgumentNullException("duration");
+//        if (item == null)
+//          throw new ArgumentNullException("item");
+//        #endregion
+//        _duration = duration;
+//        _item = item;
+//      }
+//      #endregion
+//    }
+//    #endregion
 
-    #region Events
+//    public new event EventHandler<WorkPerformedEventArgs> Worked;
+//    protected override void OnWorked(Worker.WorkPerformedEventArgs e)
+//    {
+//      Worked?.Invoke(this, new WorkPerformedEventArgs(e.Duration, _item));
+//      base.OnWorked(e);
+//    }
 
-    #region WorkPerformedEventArgs Subclass
-    public class WorkPerformedEventArgs : EventArgs
-    {
-      #region Fields
-      private readonly TimeSpan _duration;
-      private readonly T _item;
-      #endregion
-      #region Properties
-      public T Item
-      {
-        get { return _item; }
-      }
-
-      public TimeSpan Duration
-      {
-        get { return _duration; }
-      }
-      #endregion
-      #region Constructors
-      internal WorkPerformedEventArgs(TimeSpan duration, T item)
-      {
-        #region Validation
-        if (duration == null)
-          throw new ArgumentNullException("duration");
-        if (item == null)
-          throw new ArgumentNullException("item");
-        #endregion
-        _duration = duration;
-        _item = item;
-      }
-      #endregion
-    }
-    #endregion
-
-    public new event EventHandler<WorkPerformedEventArgs> Worked;
-    protected override void OnWorked(Worker.WorkPerformedEventArgs e)
-    {
-      Worked?.Invoke(this, new WorkPerformedEventArgs(e.Duration, _item));
-      base.OnWorked(e);
-    }
-
-    public IEnumerator<T> GetEnumerator() => _queue.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => _queue.GetEnumerator();
-    #endregion
-  }
-}
+//    public IEnumerator<T> GetEnumerator() => _queue.GetEnumerator();
+//    IEnumerator IEnumerable.GetEnumerator() => _queue.GetEnumerator();
+//    #endregion
+//  }
+//}

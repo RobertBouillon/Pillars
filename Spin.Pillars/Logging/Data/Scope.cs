@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spin.Pillars.Hierarchy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ namespace Spin.Pillars.Logging.Data
     public string[] Path { get; set; }
 
     public Scope(string[] path) => Path = path;
+    public Scope(Path path) => Path = path.Nodes;
 
     public override string ToString() => Path.Join('\\');
   }

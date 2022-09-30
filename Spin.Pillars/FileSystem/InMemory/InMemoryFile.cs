@@ -25,12 +25,19 @@ namespace Spin.Pillars.FileSystem.InMemory
     public override bool IsCached => _memoryFile is not null;
 
     public override DateTime GetTimeStamp(TimeStamp stamp, DateTimeKind kind) =>
-      stamp == TimeStamp.LastAccess ? MemoryFile.LastAccessTime :
-      stamp == TimeStamp.LastWrite ? MemoryFile.LastWriteTime :
-      throw new NotImplementedException(stamp.ToString());
+        stamp == TimeStamp.LastAccess ? MemoryFile.LastAccessTime :
+        stamp == TimeStamp.LastWrite ? MemoryFile.LastWriteTime :
+        throw new NotImplementedException(stamp.ToString());
 
     internal InMemoryFile(InMemoryFileSystem fileSystem, MemoryFile file) : base(fileSystem, file.Path) { }
     public InMemoryFile(InMemoryFileSystem fileSystem, Path path) : base(fileSystem, path) { }
+
+    //public override io.Stream Open(io.FileAccess access)
+    //{
+    //  if (MemoryFile is null)
+    //    FileSystem.CreateFile(Path);
+    //  return MemoryFile.Stream;
+    //}
 
     public override io.Stream OpenRead()
     {

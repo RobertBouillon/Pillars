@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using io = System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Spin.Pillars.Hierarchy;
-using System.Reflection;
 
 namespace Spin.Pillars.FileSystem.Assembly
 {

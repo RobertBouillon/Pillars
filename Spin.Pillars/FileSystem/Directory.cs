@@ -19,7 +19,7 @@ namespace Spin.Pillars.FileSystem
         throw new ArgumentNullException(nameof(fileSystem));
       #endregion
       FileSystem = fileSystem;
-      Path = path;
+      Path = path.Simplify();
     }
 
     public virtual Directory ParentDirectory => Path.Count == 0 ? null : FileSystem.GetDirectory(Path.MoveUp());

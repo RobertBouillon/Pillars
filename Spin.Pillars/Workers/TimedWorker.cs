@@ -1,120 +1,85 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Threading;
+﻿//using System;
+//using System.ComponentModel;
+//using System.Diagnostics;
+//using System.Threading;
 
-namespace Spin.Pillars.Workers
-{
-  /// <summary>
-  /// Performs work on a background thread
-  /// </summary>
-  public abstract class TimedWorker : Worker
-  {
-    #region Fields
-    private TimeSpan _interval;
-    private Stopwatch _stopwatch;
-    private bool _isHighResolution;
-    private bool _isSynchronous;
-    private TimeSpan _spinResolution = TimeSpan.FromMilliseconds(15);
-    private TimeSpan _realInterval;
-    private TimeSpan _next;
-    private volatile bool _hasWork;
-    #endregion
+//namespace Spin.Pillars.Workers
+//{
+//  public abstract class TimedWorker : Worker
+//  {
+//    private Stopwatch _stopwatch = new Stopwatch();
+//    private TimeSpan _interval;
+//    private TimeSpan _last;
+//    private CancellationTokenSource _cancellationTokenSource = new();
 
-    #region Properties
-    public bool IsSynchronous
-    {
-      get { return _isSynchronous; }
-      set
-      {
-        if (IsStarted)
-          throw new InvalidOperationException("Cannot change this property while the worker is running");
-        _isSynchronous = value;
-      }
-    }
+//    public TimeSpan Interval
+//    {
+//      get => _interval;
+//      set
+//      {
+//        if (IsStarted)
+//          throw new InvalidOperationException("Cannot change this property while the worker is running");
+//        _interval = value;
+//      }
+//    }
 
-    public bool IsHighResolution
-    {
-      get { return _isHighResolution; }
-      set
-      {
-        if (!Stopwatch.IsHighResolution)
-          throw new InvalidOperationException("This platform does not support high-resolution timers");
+//    public TimedWorker(TimeSpan interval) => _interval = interval;
 
-        if (IsStarted)
-          throw new InvalidOperationException("Cannot change this property while the worker is running");
-        _isHighResolution = value;
-      }
-    }
+//    public TimedWorker(string name, TimeSpan interval) : base(name)
+//    {
+//      #region Validation
+//      if (interval.TotalMilliseconds <= 0)
+//        throw new ArgumentOutOfRangeException("interval", "interval must be breater than zero");
+//      #endregion
+//      _interval = interval;
+//    }
 
-    public TimeSpan Interval
-    {
-      get { return _interval; }
-      set
-      {
-        if (IsStarted)
-          throw new InvalidOperationException("Cannot change this property while the worker is running");
-        _interval = value;
-      }
-    }
-    #endregion
+//    protected override void OnStopping(CancelEventArgs e)
+//    {
+//      base.OnStopping(e);
+//      _cancellationTokenSource.Cancel();
+//    }
 
-    #region Constructors
-    public TimedWorker(TimeSpan interval)
-    {
-      _interval = interval;
-    }
+//    protected override bool WaitForWork()
+//    {
+//      var timeSinceLastRun = _stopwatch.Elapsed - _last;
+//      var timeToNextRun = timeSinceLastRun + _interval;
 
-    public TimedWorker(string name, TimeSpan interval)
-      : base(name)
-    {
-      #region Validation
-      if (interval.TotalMilliseconds <= 0)
-        throw new ArgumentOutOfRangeException("interval", "interval must be breater than zero");
-      #endregion
-      _interval = interval;
-      _stopwatch = new Stopwatch();
-    }
+//      if (timeToNextRun < TimeSpan.Zero)
+//      {
+//        OnBehindSchedule(timeToNextRun);
+//        timeToNextRun = TimeSpan.Zero;
+//      }
 
-    #endregion
+//      if (!_cancellationTokenSource.Token.WaitHandle.WaitOne(timeToNextRun))
+//      {
+//        _last = _stopwatch.Elapsed;
+//        return true;
+//      }
+//      else
+//        return false;
+//    }
 
-    #region Overrides
-    protected override bool HasWork => _hasWork;
+//    protected override void Work() => Work(_cancellationTokenSource.Token);
+//    protected virtual void Work(CancellationToken ctoken) { }
 
-    protected override void WaitForWork()
-    {
-      var wait = _isHighResolution ? _next - _stopwatch.Elapsed - _spinResolution : _next - _stopwatch.Elapsed;
-      var lwait = Math.Min(WaitDelay.Ticks, wait.Ticks);
-      if (lwait > 0)
-      {
-        Thread.Sleep(TimeSpan.FromTicks(lwait));
-        return;
-      }
+//    protected override void OnStarted(EventArgs e)
+//    {
+//      _last = TimeSpan.Zero;
+//      _stopwatch.Restart();
+//      base.OnStarted(e);
+//    }
 
-      if (_isHighResolution)
-        while (_stopwatch.Elapsed < _next) ;
+//    #region BehindScheduleEventArgs Subclass
+//    public class BehindScheduleEventArgs : EventArgs
+//    {
+//      public TimeSpan _lag { get; private set; }
+//      internal BehindScheduleEventArgs(TimeSpan lag) => _lag = lag;
+//    }
+//    #endregion
 
-      _next += _interval;
-
-      _hasWork = true;
-    }
-
-    protected override void OnStarting(CancelEventArgs e)
-    {
-      _stopwatch = new Stopwatch();
-      _stopwatch.Start();
-      _realInterval = _isHighResolution ? _interval - _spinResolution : _interval;
-      base.OnStarting(e);
-    }
-
-    protected override void OnWorked(WorkPerformedEventArgs e)
-    {
-      _hasWork = false;
-      base.OnWorked(e);
-    }
-    #endregion
-  }
-}
+//    public event EventHandler<BehindScheduleEventArgs> BehindSchedule;
+//    protected void OnBehindSchedule(TimeSpan lag) => OnBehindSchedule(new BehindScheduleEventArgs(lag));
+//    protected virtual void OnBehindSchedule(BehindScheduleEventArgs e) => BehindSchedule?.Invoke(this, e);
+//  }
+//}

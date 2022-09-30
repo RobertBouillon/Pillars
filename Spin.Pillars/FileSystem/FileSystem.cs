@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using io = System.IO;
 
 namespace Spin.Pillars.FileSystem
 {
@@ -43,10 +42,10 @@ namespace Spin.Pillars.FileSystem
 
     public string Name { get; }
     public abstract char PathSeparator { get; }
-    public virtual Directory Root => GetDirectory(Path.Empty);
+    public virtual Directory Root { get; }
     public virtual bool IsReadOnly => false;
 
-    public FileSystem() { }
+    public FileSystem() => Root = GetDirectory(Path.Root);
     protected FileSystem(string name)
     {
       #region Validation
@@ -56,12 +55,12 @@ namespace Spin.Pillars.FileSystem
       Name = name;
     }
 
-    public virtual Directory GetDirectory(string path) => GetDirectory(ParsePath(path));
+    public virtual Directory GetDirectory(string path) => GetDirectory(new Path(ParsePath(path), isTerminated: true));
     public abstract Directory GetDirectory(Path path);
     public virtual File GetFile(string path) => GetFile(ParsePath(path));
     public abstract File GetFile(Path path);
     public virtual Path ParsePath(string path) => Path.Parse(path, PathSeparator);
-    public virtual Path ParsePath(string path, Path context) => Path.IsPathRooted(path, PathSeparator) ? ParsePath(path) : context.Append(ParsePath(path));
+    public virtual Path ParsePath(string path, Path context) => context.Append(ParsePath(path));
     public abstract IEnumerable<TimeStamp> SupportedDateStamps { get; }
 
     public virtual Task<bool> FileExistsAsync(string path) => FileExistsAsync(ParsePath(path));
@@ -103,69 +102,11 @@ namespace Spin.Pillars.FileSystem
     public abstract IEnumerable<Path> GetDirectories(Path directory);
 
     public virtual string GetPathedName(Path path) => path.ToString(PathSeparator);
-    public virtual Path ParseAbsolutePath(string path)
-    {
-      #region Validation
-      if (String.IsNullOrWhiteSpace(path))
-        throw new ArgumentNullException(nameof(path));
-      #endregion
-      if (path.StartsWith(Name))
-        return Path.Parse(path.Substring(path.Length), PathSeparator);
-      if (path.StartsWith(PathSeparator.ToString()))
-        return Path.Parse(path.Substring(1), PathSeparator);
-      return Path.Parse(path, PathSeparator);
-    }
-
-    public virtual Path ParsePath(string path, out bool isRooted)
-    {
-      #region Validation
-      if (String.IsNullOrWhiteSpace(path))
-        throw new ArgumentNullException(nameof(path));
-      #endregion
-
-      if (path.StartsWith(Name))
-      {
-        isRooted = true;
-        return Path.Parse(path.Substring(path.Length), PathSeparator);
-      }
-      else if (path.StartsWith(PathSeparator.ToString()))
-      {
-        isRooted = true;
-        return Path.Parse(path.Substring(1), PathSeparator);
-      }
-      else
-      {
-        isRooted = false;
-        return Path.Parse(path, PathSeparator);
-      }
-    }
-
-    public virtual bool TryParsePath(string path, out Path pathOut, out bool isRooted)
-    {
-      #region Validation
-      if (String.IsNullOrWhiteSpace(path))
-        throw new ArgumentNullException(nameof(path));
-      #endregion
-
-      if (path.StartsWith(Name))
-      {
-        isRooted = true;
-        pathOut = Path.Parse(path.Substring(path.Length), PathSeparator);
-      }
-      else if (path.StartsWith(PathSeparator.ToString()))
-      {
-        isRooted = true;
-        pathOut = Path.Parse(path.Substring(1), PathSeparator);
-      }
-      else
-      {
-        isRooted = false;
-        pathOut = Path.Parse(path, PathSeparator);
-      }
-      return true;
-    }
 
     public virtual IEntity this[string path] => this[ParsePath(path)];
-    public virtual IEntity this[Path path] => path.IsBranch ? GetDirectory(path) : GetFile(path);
+    public virtual IEntity this[Path path] =>
+      path.IsTerminated == true ? GetFile(path) :
+      path.IsTerminated == false ? GetDirectory(path) :
+      (IEntity)GetFile(path) ?? GetDirectory(path);
   }
 }

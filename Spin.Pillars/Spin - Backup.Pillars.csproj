@@ -68,8 +68,8 @@
     <Compile Update="**\*.tests.cs">
       <DependentUpon>$([System.String]::Copy(%(Filename)).Replace(".tests",".cs"))</DependentUpon>
     </Compile>
-	<None Update="**\*.md">
-	  <DependentUpon>$([System.String]::Copy(%(Filename)).Replace(".md",""))</DependentUpon>
+	<None Update="**\*.md.cs">
+	  <DependentUpon>$([System.String]::Copy(%(Filename)).Replace(".md",".cs"))</DependentUpon>
 	</None>
   </ItemGroup>
 

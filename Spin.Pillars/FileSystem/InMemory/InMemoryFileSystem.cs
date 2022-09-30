@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using io = System.IO;
 
 namespace Spin.Pillars.FileSystem.InMemory
@@ -37,21 +35,7 @@ namespace Spin.Pillars.FileSystem.InMemory
       return file;
     }
 
-    internal bool TryFindFile(Path path, out MemoryFile file)
-    {
-      var dir = _root;
-      foreach (var item in path.Branches)
-        if (!dir.Directories.TryGetValue(item, out dir))
-        {
-          file = null;
-          return false;
-        }
-
-      if (!dir.Files.TryGetValue(path.Leaf, out file))
-        return false;
-
-      return true;
-    }
+    internal bool TryFindFile(Path path, out MemoryFile file) => (file = FindFile(path)) is not null;
 
     internal MemoryDirectory FindDirectory(Path path)
     {

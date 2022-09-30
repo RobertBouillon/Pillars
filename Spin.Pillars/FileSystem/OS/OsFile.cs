@@ -6,18 +6,11 @@ using System.Reflection;
 
 namespace Spin.Pillars.FileSystem.OS
 {
-  public class OsFile : File
+  public partial class OsFile : File
   {
     public static OsFile CurrentExecuting => Parse(System.Reflection.Assembly.GetExecutingAssembly().Location);
     public static OsFile Create(io.FileInfo file) => Parse(file.FullName);
-    public static OsFile Parse(string path)
-    {
-      var root = System.IO.Path.GetPathRoot(path).ToUpper();
-      if (!OsFileSystem.Mounts.TryGetValue(root, out var fileSystem))
-        throw new ArgumentException($"Unable to find an instance of the drive '{root}'");
-
-      return new OsFile(fileSystem, Path.Parse(path.Substring(root.Length), fileSystem.PathSeparator));
-    }
+    public static OsFile Parse(string path) => new OsFile(new OsFileSystem(), WindowsFilePath.Parse(path));
 
     public override OsFileSystem FileSystem => base.FileSystem as OsFileSystem;
 
