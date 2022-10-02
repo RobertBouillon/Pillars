@@ -46,7 +46,7 @@ namespace Spin.Pillars.FileSystem
     public virtual bool IsReadOnly => false;
 
     public FileSystem() => Root = GetDirectory(Path.Root);
-    protected FileSystem(string name)
+    protected FileSystem(string name) : this()
     {
       #region Validation
       if (String.IsNullOrWhiteSpace(name))
