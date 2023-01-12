@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.FileSystem
+namespace Spin.Pillars.FileSystem;
+
+public interface IObservable
 {
-  public interface IObservable
-  {
-    Observer Observe(ChangeTypes types, string filter = null);
-  }
+  Observer Observe(ChangeTypes types, string filter = null);
 }

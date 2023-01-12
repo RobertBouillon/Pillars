@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Spin.Pillars.FileSystem
+namespace Spin.Pillars.FileSystem;
+
+public enum TimeStamp
 {
-  public enum TimeStamp
-  {
-    Created,
-    LastWrite,
-    LastAccess
-  }
+  Created,
+  LastWrite,
+  LastAccess
 }

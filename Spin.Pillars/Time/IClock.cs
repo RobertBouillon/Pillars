@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Time
+namespace Spin.Pillars.Time;
+
+public interface IClock
 {
-  public interface IClock
-  {
-    DateTime Time { get; set; }
-    event EventHandler<TimeChangedEventArgs> TimeChanged;
-  }
+  DateTime Time { get; set; }
+  event EventHandler<TimeChangedEventArgs> TimeChanged;
 }

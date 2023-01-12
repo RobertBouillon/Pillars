@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Logging
-{
-  public class LogContext
-  {
+namespace Spin.Pillars.Logging;
 
-  }
+public class LogContext
+{
+
 }

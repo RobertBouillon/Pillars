@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Spin.Pillars.Logging
+namespace Spin.Pillars.Logging;
+
+public class LogFactory
 {
-  public class LogFactory
+  #region Constructors
+  public LogFactory()
   {
-    #region Constructors
-    public LogFactory()
-    {
 
-    }
-    #endregion 
-
-    #region Methods
-    
-    #endregion
   }
+  #endregion 
+
+  #region Methods
+  
+  #endregion
 }

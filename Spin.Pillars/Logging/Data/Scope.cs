@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Logging.Data
+namespace Spin.Pillars.Logging.Data;
+
+public class Scope
 {
-  public class Scope
-  {
-    public string[] Path { get; set; }
+  public string[] Path { get; set; }
 
-    public Scope(string[] path) => Path = path;
-    public Scope(Path path) => Path = path.Nodes;
+  public Scope(string[] path) => Path = path;
+  public Scope(Path path) => Path = path.Nodes;
 
-    public override string ToString() => Path.Join('\\');
-  }
+  public override string ToString() => Path.Join('\\');
 }

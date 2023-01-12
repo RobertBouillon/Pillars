@@ -5,25 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Time
+namespace Spin.Pillars.Time;
+
+public class UtcClock : IClock
 {
-  public class UtcClock : IClock
+  public UtcClock() { }
+
+  public DateTime Time
   {
-    public UtcClock() { }
-
-    public DateTime Time
+    get
     {
-      get
-      {
-        return DateTime.UtcNow;
-      }
-
-      set
-      {
-        throw new NotSupportedException();
-      }
+      return DateTime.UtcNow;
     }
 
-    public event EventHandler<TimeChangedEventArgs> TimeChanged;
+    set
+    {
+      throw new NotSupportedException();
+    }
   }
+
+  public event EventHandler<TimeChangedEventArgs> TimeChanged;
 }

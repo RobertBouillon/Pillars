@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.FileSystem.OS
+namespace Spin.Pillars.FileSystem.OS;
+
+partial class OsFile
 {
-  partial class OsFile
+  public static void TestParse()
   {
-    public static void TestParse()
-    {
-      var file = OsDirectory.CurrentExecuting.GetFile("local.bin");
-    }
+    var file = OsDirectory.CurrentExecuting.GetFile("local.bin");
   }
 }

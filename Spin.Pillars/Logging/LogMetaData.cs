@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Logging
+namespace Spin.Pillars.Logging;
+
+public interface ILogMetaData
 {
-  public interface ILogMetaData
-  {
-    string Text { get; }
-  }
+  string Text { get; }
 }

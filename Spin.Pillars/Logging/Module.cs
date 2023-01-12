@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.Logging
+namespace Spin.Pillars.Logging;
+
+class Module
 {
-  class Module
-  {
-  }
 }

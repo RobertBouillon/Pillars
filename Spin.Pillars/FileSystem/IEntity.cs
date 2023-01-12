@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spin.Pillars.FileSystem
+namespace Spin.Pillars.FileSystem;
+
+public interface IEntity : ILeaf
 {
-  public interface IEntity : ILeaf
-  {
-    FileSystem FileSystem { get; }
-    string PathedName { get; }
-    Directory ParentDirectory { get; }
-  }
+  FileSystem FileSystem { get; }
+  string PathedName { get; }
+  Directory ParentDirectory { get; }
 }

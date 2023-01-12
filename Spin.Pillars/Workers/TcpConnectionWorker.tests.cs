@@ -1,28 +1,27 @@
 ﻿using System.Net.Sockets;
 
-namespace Spin.Pillars.Workers
+namespace Spin.Pillars.Workers;
+
+partial class TcpConnectionWorker
 {
-  partial class TcpConnectionWorker
+  public static void TestTcpWorker()
   {
-    public static void TestTcpWorker()
-    {
-      var ep = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 5050);
-      var worker = new TcpConnectionWorker(ep);
-      worker.Start();
+    var ep = new System.Net.IPEndPoint(System.Net.IPAddress.Parse("127.0.0.1"), 5050);
+    var worker = new TcpConnectionWorker(ep);
+    worker.Start();
 
-      //Thread.Sleep(10000);
-      Connect(ep);
-      Connect(ep);
-      Connect(ep);
+    //Thread.Sleep(10000);
+    Connect(ep);
+    Connect(ep);
+    Connect(ep);
 
-      worker.Stop();
-    }
+    worker.Stop();
+  }
 
-    private static void Connect(System.Net.IPEndPoint ep)
-    {
-      using var client = new TcpClient();
-      client.Connect(ep);
-      client.Close();
-    }
+  private static void Connect(System.Net.IPEndPoint ep)
+  {
+    using var client = new TcpClient();
+    client.Connect(ep);
+    client.Close();
   }
 }
