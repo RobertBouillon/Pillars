@@ -55,7 +55,7 @@ public partial class OsFile : File
   public override void Write(string text, bool overwrite = true, Encoding encoding = null)
   {
     #region Validation
-    if (String.IsNullOrWhiteSpace(text))
+    if (text is null)  //Allow whitespace
       throw new ArgumentNullException(nameof(text));
     #endregion
 

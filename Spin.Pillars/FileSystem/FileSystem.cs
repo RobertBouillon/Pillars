@@ -104,8 +104,5 @@ public abstract class FileSystem
   public virtual string GetPathedName(Path path) => path.ToString(PathSeparator);
 
   public virtual IEntity this[string path] => this[ParsePath(path)];
-  public virtual IEntity this[Path path] =>
-    path.IsTerminated == true ? GetFile(path) :
-    path.IsTerminated == false ? GetDirectory(path) :
-    (IEntity)GetFile(path) ?? GetDirectory(path);
+  public virtual IEntity this[Path path] => path.IsTerminated ? GetDirectory(path) : GetFile(path);
 }
