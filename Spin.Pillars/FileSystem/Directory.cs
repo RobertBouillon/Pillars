@@ -37,8 +37,10 @@ public abstract class Directory : IBranch, IEntity
 
   public virtual Directory GetDirectory(Path path) => FileSystem.GetDirectory(Path.Append(path));
   public virtual Directory GetDirectory(string name) => FileSystem.GetDirectory(FileSystem.ParsePath(name, Path));
+  public virtual Directory GetDirectory(params string[] path) => GetDirectory(new Path(path));
   public virtual File GetFile(Path path) => FileSystem.GetFile(Path.Append(path));
   public virtual File GetFile(string name) => FileSystem.GetFile(FileSystem.ParsePath(name, Path));
+  public virtual File GetFile(params string[] path) => GetFile(new Path(path));
 
   //Optional caching. Not implemented / supported by default.
   public virtual bool Cache() => false;
