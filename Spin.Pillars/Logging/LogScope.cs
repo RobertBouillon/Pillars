@@ -3,9 +3,6 @@ using Spin.Pillars.Logging.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Spin.Pillars.Logging;
 
@@ -15,10 +12,11 @@ public class LogScope
   public string Name { get; }
   public List<object> Data { get; set; }
   public DateTime Created { get; set; }
-  public TimeSpan Elapsed => Log.Clock.Time - Created;
+  public DateTime LastUpdate { get; set; }
+  public TimeSpan Elapsed => Log.Clock.Time - LastUpdate;
   public Path Path => new Path(this.Traverse(x => x.Parent).Reverse().Skip(1).Select(x => x.Name));
 
-  internal LogScope() => Created = Log.Clock.Time;
+  internal LogScope() => LastUpdate = Created = Log.Clock.Time;
   internal LogScope(string name) : this() => Name = name;
   internal LogScope(string name, IEnumerable<object> data) : this(name) => Data = data.ToList();
   internal LogScope(string name, IEnumerable<object> data, LogScope parent) : this(name) => Parent = parent;
@@ -76,10 +74,13 @@ public class LogScope
   public LogEntry Write(params object[] data) => Log.Write(Path, data);
 
   public LogEntry Update(string status, params object[] data) => Update(status, (IEnumerable<object>)data);
-  public LogEntry Update(string status, IEnumerable<object> data) =>
-    Log.Write(Path, data
+  public LogEntry Update(string status, IEnumerable<object> data)
+  {
+    LastUpdate = Log.Clock.Time;
+    return Log.Write(Path, data
       .Append(new Tag("Status", status))
       .Append(new Tag("Elapsed", Elapsed)));
+  }
 
   public LogEntry Start(params object[] data) => Update("Started", data);
   public LogEntry Failed(params object[] data) => Update("Failed", data.Append(Log.ErrorData));

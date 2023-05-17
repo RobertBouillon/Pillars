@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Spin.Pillars.Hierarchy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,17 +12,17 @@ public class ConsoleReader
   public string TimeFormat { get; set; }
 
   public bool ShowScope { get; set; } = true;
-  public int ScopeWidth { get; set; } = 12;
+  public int ScopeWidth { get; set; } = 40;
 
 
   private Dictionary<string, MessageTemplate> _templates = new Dictionary<string, MessageTemplate>();
 
   public void Read(LogEntry entry)
   {
-    if(ShowTime)
+    if (ShowTime)
       Console.Write(SetWidth(entry.Time.ToString(TimeFormat), TimeWidth));
 
-    if(ShowScope)
+    if (ShowScope)
     {
       if (entry.HasScope)
         Console.Write(SetWidth(entry.Scope.ToString('\\'), ScopeWidth));
@@ -36,6 +37,16 @@ public class ConsoleReader
         _templates.Add(message, template = new MessageTemplate(entry.Message.Text));
 
       template.Compose(Console.Out, entry.Data.Take(template.Arguments));
+    }
+
+    if (entry.TryGetTag<String>("Status").Succeeded(out var status))
+    {
+      Console.Write(status);
+      if (status == "Finished" && entry.TryGetTag<TimeSpan>("Elapsed").Succeeded(out var elapsed))
+      {
+        Console.Write(" in ");
+        Console.Write(elapsed);
+      }
     }
 
     Console.WriteLine();
