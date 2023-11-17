@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using Spin.Pillars.Logging.Data;
+
 namespace Spin.Pillars.Logging.Readers;
 
 public partial class MessageTemplate
@@ -100,7 +102,13 @@ public partial class MessageTemplate
         if (part.HasFormat(_text, index))
           writer.Write(((IFormattable)a.Dequeue()).ToString(part.FormatString(_text, index), CultureInfo.CurrentCulture));
         else
-          writer.Write(a.Dequeue());
+        {
+          var output = a.Dequeue();
+          if(output is Tag tag)
+            writer.Write(tag.Value);
+          else
+            writer.Write(output);
+        }
       }
 
       index += part.Length;
