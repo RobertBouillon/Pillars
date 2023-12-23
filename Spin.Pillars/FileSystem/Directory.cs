@@ -59,6 +59,9 @@ public abstract class Directory : IBranch, IEntity
 
   public virtual void CopyTo(Directory destination, bool overwrite = true, bool recurse = false)
   {
+    if (!destination.Exists())
+      destination.Create();
+
     foreach (var file in GetFiles())
       file.CopyTo(destination, overwrite);
 

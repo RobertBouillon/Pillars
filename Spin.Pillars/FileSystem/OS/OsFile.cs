@@ -3,6 +3,9 @@ using io = System.IO;
 using System.Text;
 using Spin.Pillars.Hierarchy;
 using System.Reflection;
+using System.Threading;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Spin.Pillars.FileSystem.OS;
 
@@ -59,7 +62,7 @@ public partial class OsFile : File
       throw new ArgumentNullException(nameof(text));
     #endregion
 
-    if (overwrite)
+    if (overwrite && Exists())
       Delete();
 
     if (encoding is null)
@@ -87,6 +90,30 @@ public partial class OsFile : File
         FileInfo.LastAccessTimeUtc = date;
     else
       throw new NotImplementedException(stamp.ToString());
+  }
+
+  public Attempt TryUnlock(TimeSpan timeout)
+  {
+    Stopwatch sw = Stopwatch.StartNew();
+    while (IsLocked)
+    {
+      Thread.Sleep(50);
+      if (sw.Elapsed > timeout)
+        return Attempt.Failure;
+    }
+    return Attempt.Successful;
+  }
+
+  public async Task<Attempt> TryUnlockAsync(TimeSpan timeout)
+  {
+    Stopwatch sw = Stopwatch.StartNew();
+    while (IsLocked)
+    {
+      await Task.Delay(50);
+      if (sw.Elapsed > timeout)
+        return Attempt.Failure;
+    }
+    return Attempt.Successful;
   }
 
   public override bool IsLocked
