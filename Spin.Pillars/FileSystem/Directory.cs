@@ -76,7 +76,7 @@ public abstract class Directory : IBranch, IEntity
 
   public virtual bool Exists() => FileSystem.DirectoryExists(Path);
   public virtual void Create() => FileSystem.CreateDirectory(Path);
-  public virtual void Delete() => FileSystem.DeleteDirectory(Path);
+  public virtual void Delete(bool recurse = true) => FileSystem.DeleteDirectory(Path, recurse);
   public virtual void Purge()
   {
     foreach (var file in GetFiles())

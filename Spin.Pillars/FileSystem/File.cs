@@ -69,6 +69,19 @@ public abstract class File : Disposable, IEntity
   public virtual byte[] ReadAllBytes() => new io.MemoryStream().DisposeAfter(x => { OpenRead().DisposeAfter(y => y.CopyTo(x)); return x.ToArray(); });
   public virtual string ReadAllText(Encoding encoding = null) => encoding is null ? new io.StreamReader(OpenRead()).DisposeAfter(x => x.ReadToEnd()) : new io.StreamReader(OpenRead(), encoding).DisposeAfter(x => x.ReadToEnd());
   public virtual string[] ReadAllLines(Encoding encoding = null) => ReadAllText(encoding).Split('\n');
+  public virtual void Write(byte[] data, bool overwrite = true, Encoding encoding = null)
+  {
+    #region Validation
+    if (data is null)
+      throw new ArgumentNullException(nameof(data));
+    #endregion
+
+    if (overwrite && Exists())
+      Delete();
+    using (var stream = OpenWrite())
+      stream.Write(data);
+  }
+
   public virtual void Write(string text, bool overwrite = true, Encoding encoding = null)
   {
     #region Validation
