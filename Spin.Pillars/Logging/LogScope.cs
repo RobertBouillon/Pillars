@@ -25,8 +25,8 @@ public class LogScope
 
   public LogScope Start(string name, params object[] data)
   {
-    var log = new LogScope();
-    var datalist = data.Concat(new Message(name), new Scope(Path));
+    var log = new LogScope(name) { Parent = this };
+    var datalist = data.Concat(new Scope(Path));
 
     if (!data.OfType<Tag>().Any(x => x.Text == "Status"))
       datalist = datalist.Concat(new Tag("Status", "Started"));
@@ -76,10 +76,11 @@ public class LogScope
   public LogEntry Update(string status, params object[] data) => Update(status, (IEnumerable<object>)data);
   public LogEntry Update(string status, IEnumerable<object> data)
   {
-    LastUpdate = Log.Clock.Time;
-    return Log.Write(Path, data
+    var ret = Log.Write(Path, data
       .Append(new Tag("Status", status))
       .Append(new Tag("Elapsed", Elapsed)));
+    LastUpdate = Log.Clock.Time;
+    return ret;
   }
 
   public LogEntry Start(params object[] data) => Update("Started", data);

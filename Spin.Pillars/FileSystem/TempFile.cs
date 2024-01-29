@@ -1,10 +1,20 @@
 ﻿using System;
+
 using io = System.IO;
 
 namespace Spin.Pillars.FileSystem.OS;
 
 public class TempFile : File
 {
+  public static TempFile Create(Directory directory)
+  {
+    TempFile tempFile = null;
+    while (tempFile?.Exists() ?? true)
+      tempFile = new TempFile(directory.GetFile(Guid.NewGuid().ToString("N")));
+    tempFile.Create();
+    return tempFile;
+  }
+
   public File File { get; }
   public override bool IsReadOnly { get => File.IsReadOnly; set => File.IsReadOnly = value; }
 
