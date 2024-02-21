@@ -117,6 +117,7 @@ public partial class Path : IComparable<Path>, IFormattable
     return new Path(q.Reverse(), IsRooted, isTerminated ?? IsTerminated);
   }
 
+  public virtual Path Skip(int number = 1) => new Path(Nodes.Skip(number).ToArray(), IsRooted, IsTerminated);
   public virtual Path Append(params string[] paths) => new Path((IEnumerable<String>)Nodes.Concat(paths), IsRooted, false);
   public virtual Path Append(Path path) => new Path(Nodes.Concat(path.Nodes), IsRooted, path.IsTerminated);
 
@@ -164,7 +165,7 @@ public partial class Path : IComparable<Path>, IFormattable
     IsTerminated ? Nodes.Join(separator) + separator :
     Nodes.Join(separator);
 
-  public override int GetHashCode() => Nodes.Select(x => x.GetHashCode()).Aggregate((x, y) => x ^ y);
+  public override int GetHashCode() => Nodes.Any() ? Nodes.Select(x => x.GetHashCode()).Aggregate((x, y) => x ^ y) : 0;
 
   public string ToString(string format, IFormatProvider formatProvider) =>
     (format is null) ? ToString() :

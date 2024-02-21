@@ -60,7 +60,7 @@ public partial class OsFile : File
       throw new ArgumentNullException(nameof(text));
     #endregion
 
-    if (overwrite)
+    if (overwrite && Exists())
       Delete();
 
     if (encoding is null)
