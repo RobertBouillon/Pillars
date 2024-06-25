@@ -64,6 +64,7 @@ public partial class Path : IComparable<Path>, IFormattable
   public Path Branch => new(Nodes.Take(Nodes.Length - 1));
   public virtual string Leaf => Nodes.Any() ? Nodes.Last() : null;
   public int Count => Nodes.Length;
+  public int Depth => Nodes.Length;
 
   public Path(IEnumerable<string> nodes, bool isRooted = false, bool isTerminated = false) : this(nodes) => (IsRooted, IsTerminated) = (isRooted, isTerminated);
   public Path(Path node, bool? isRooted = null, bool? isTerminated = null) : this(node.Nodes) => (IsRooted, IsTerminated) = (isRooted ?? node.IsRooted, isTerminated ?? node.IsTerminated);
@@ -120,6 +121,8 @@ public partial class Path : IComparable<Path>, IFormattable
   public virtual Path Skip(int number = 1) => new Path(Nodes.Skip(number).ToArray(), IsRooted, IsTerminated);
   public virtual Path Append(params string[] paths) => new Path((IEnumerable<String>)Nodes.Concat(paths), IsRooted, false);
   public virtual Path Append(Path path) => new Path(Nodes.Concat(path.Nodes), IsRooted, path.IsTerminated);
+  public virtual Path RemoveRoot() => new Path(Nodes, false, IsTerminated);
+  public virtual Path RemoveTerminated() => new Path(Nodes, IsRooted, false);
 
   public void Intern(HashSet<string> dictionary)
   {
