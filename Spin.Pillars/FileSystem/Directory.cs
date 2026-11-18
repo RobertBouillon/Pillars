@@ -85,11 +85,14 @@ public abstract class Directory : IBranch, IEntity
       directory.Purge();
   }
 
-  public virtual Directory Create(string subdirectory)
+  public virtual Directory Create(string subdirectory, bool overwrite = false)
   {
     var sub = GetDirectory(subdirectory);
     if (sub.Exists())
-      throw new Exception($"{subdirectory} already exists");
+      if (overwrite)
+        sub.Delete();
+      else
+        throw new Exception($"{subdirectory} already exists");
 
     sub.Create();
     return sub;

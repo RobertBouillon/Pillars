@@ -22,6 +22,10 @@ public class OsDirectory : Directory, IObservable
 
   public override OsDirectory GetDirectory(Path path) => base.GetDirectory(path) as OsDirectory;
   public override OsDirectory GetDirectory(string name) => base.GetDirectory(name) as OsDirectory;
+  public override OsDirectory GetDirectory(params string[] path) => base.GetDirectory(path) as OsDirectory;
+
+  public override OsDirectory Create(string subdirectory, bool overwrite = false) => base.Create(subdirectory, overwrite) as OsDirectory;
+  
   public override OsFile GetFile(Path path) => base.GetFile(path) as OsFile;
   public override OsFile GetFile(string name) => base.GetFile(name) as OsFile;
 
